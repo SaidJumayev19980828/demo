@@ -19,13 +19,7 @@ public class DemoApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(DemoApplication.class, args);
-        WebClient client = WebClient.builder()
-                .baseUrl("https://api.jowi.club/v010/bills/:qr_code?api_key=q35Oua5HknLfRmY8cBvs0gNbt7xwxe3avAStXs1F&sig=3516596d8ff5da2")
-                .defaultCookie("cookieKey", "cookieValue")
-                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .defaultUriVariables(Collections.singletonMap("url", "https://api.jowi.club/v010/bills/:qr_code?api_key=q35Oua5HknLfRmY8cBvs0gNbt7xwxe3avAStXs1F&sig=3516596d8ff5da2"))
-                .build();
-        System.out.println("DATA"+client);
+
     }
 
 }

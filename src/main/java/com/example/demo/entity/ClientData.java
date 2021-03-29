@@ -2,9 +2,11 @@ package com.example.demo.entity;
 
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+
+
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.springframework.hateoas.server.core.SpringAffordanceBuilder;
+
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -12,18 +14,25 @@ import java.io.Serializable;
 @Getter
 @Setter
 @Entity
-@NoArgsConstructor
+@RequiredArgsConstructor
 public class ClientData implements Serializable {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Column(name="id")
     private Long Id;
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
 
-    private String date_of_birth;
+
+
     private String name;
     private String surname;
-    private String passport_number;
-    private String place_of_birth;
+    private String passportNumber;
+    private String date_of_birth;
+    private String kafil_person_name;
+    private String kafil_passport_number;
+    private String kafil_surname;
+    private String kafil_date_of_birth;
+    private String kafil_income_yearly;
 
 
 }
