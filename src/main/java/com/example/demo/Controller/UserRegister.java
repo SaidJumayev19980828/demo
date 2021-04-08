@@ -21,6 +21,7 @@ public class UserRegister {
     @PostMapping("details")
     public ClientData userData(ClientData clientData) {
 
+
         return clientRepository.save(clientData);
     }
 
