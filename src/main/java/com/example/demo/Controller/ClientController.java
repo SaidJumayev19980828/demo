@@ -70,10 +70,10 @@ public class ClientController {
 //        client.setDate_of_birth(clientDetails.getDate_of_birth());
 //
 
-        client.setKafil_person_name(clientDetails.getKafil_person_name());
-        client.setKafil_passport_number(clientDetails.getKafil_passport_number());
-        client.setKafil_surname(clientDetails.getKafil_surname());
-        client.setKafil_income_yearly(clientDetails.getKafil_income_yearly());
+        client.setKafil_ism_familya(clientDetails.getKafil_ism_familya());
+        client.setIsh_haqi(clientDetails.getIsh_haqi());
+        client.setKafil_ish_haqi_yillik(clientDetails.getKafil_ish_haqi_yillik());
+        client.setKredit_summasi(clientDetails.getKredit_summasi());
 
         final ClientData updatedClient = clientRepository.save(client);
 

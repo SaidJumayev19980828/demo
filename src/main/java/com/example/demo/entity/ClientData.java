@@ -28,11 +28,10 @@ public class ClientData implements Serializable {
     private String surname;
     private String passportNumber;
     private String date_of_birth;
-    private String kafil_person_name;
-    private String kafil_passport_number;
-    private String kafil_surname;
-    private String kafil_date_of_birth;
-    private String kafil_income_yearly;
+    private String kafil_ish_haqi_yillik;
+    private String kafil_ism_familya;
+    private String ish_haqi;
+    private String kredit_summasi;
 
 
 }
