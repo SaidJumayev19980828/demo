@@ -7,4 +7,5 @@ public class ExceptionConstants {
     public static final String ABOUT_APP_NOT_FOUND = "About app not found";
     public static final String TOO_FREQUENT_CODE_REQUEST = "Too frequent code request";
     public static final String INVALID_REQUEST_FORMAT = "Invalid request format";
+    public static final String PHOTO_NOT_FOUND = "Image not found";
 }

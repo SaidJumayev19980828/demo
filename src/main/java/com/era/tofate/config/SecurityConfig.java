@@ -65,8 +65,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/**/*.css",
                         "/**/*.js")
                 .permitAll()
-                .antMatchers("/api/user/auth/**", "/api/request").permitAll()
-                .antMatchers("/api/user/profile/**").hasAuthority("DRIVER")
+                .antMatchers("/api/user/auth/**", "/api/request", "/api/user/socialstatus/**").permitAll()
+                .antMatchers("/api/user/account/**").hasAuthority("USER")
         ;
 
         // Add our custom Token based authentication filter

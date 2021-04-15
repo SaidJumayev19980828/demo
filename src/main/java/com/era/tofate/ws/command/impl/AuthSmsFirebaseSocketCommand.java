@@ -95,7 +95,7 @@ public class AuthSmsFirebaseSocketCommand implements GeneralSocketCommand {
                     // The token is not valid/an error occurred
                     if (response.code() == 400) {
                         sendMessage(session, new GeneralSocketResponse<>(getActionType(),
-                                new AuthSmsFirebaseSocketResponse("ERROR", "BAD_REQUEST", null)));
+                                new AuthSmsFirebaseSocketResponse("ERROR", "BAD_REQUEST")));
                         socketSessionPool.closeSession(session, CloseStatus.NORMAL);
                     }
                     // The token is valid
@@ -111,9 +111,13 @@ public class AuthSmsFirebaseSocketCommand implements GeneralSocketCommand {
                                 User oldUser = userService.findByLogin(phone).get();
 
                                 String authToken = getAuthToken(oldUser);
+                                boolean isProfileFilled = true;
+                                if (oldUser.getFirstName() == null || oldUser.getLastName() == null) {
+                                    isProfileFilled = false;
+                                }
 
                                 sendMessage(session, new GeneralSocketResponse<>(getActionType(),
-                                        new AuthSmsFirebaseSocketResponse("OK", "AUTH", authToken)));
+                                        new AuthSmsFirebaseSocketResponse("OK", "AUTH", authToken, isProfileFilled)));
                             }
                             // The user is not in the database - registration
                             else {
@@ -124,6 +128,7 @@ public class AuthSmsFirebaseSocketCommand implements GeneralSocketCommand {
                                 userRole.setRole(Role.USER);
                                 newUser.setAuthType(AuthType.SMS);
                                 newUser.setEnabled(true);
+                                newUser.setAge(0L);
 
                                 User userResult = userService.save(newUser);
                                 userRoleService.save(userRole);
@@ -131,13 +136,13 @@ public class AuthSmsFirebaseSocketCommand implements GeneralSocketCommand {
                                 String authToken = getAuthToken(userResult);
 
                                 sendMessage(session, new GeneralSocketResponse<>(getActionType(),
-                                        new AuthSmsFirebaseSocketResponse("OK", "REG", authToken)));
+                                        new AuthSmsFirebaseSocketResponse("OK", "REG", authToken, false)));
                             }
                         }
                         // The phone numbers of the token and the one specified in the socket do not match
                         else {
                             sendMessage(session, new GeneralSocketResponse<>(getActionType(),
-                                    new AuthSmsFirebaseSocketResponse("ERROR", "BAD_REQUEST", null)));
+                                    new AuthSmsFirebaseSocketResponse("ERROR", "BAD_REQUEST")));
                             socketSessionPool.closeSession(session, CloseStatus.NORMAL);
                         }
                     }
@@ -146,12 +151,12 @@ public class AuthSmsFirebaseSocketCommand implements GeneralSocketCommand {
                 @Override
                 public void onFailure(Call<UsersFirebaseResponse> call, Throwable throwable) {
                     sendMessage(session, new GeneralSocketResponse<>(getActionType(),
-                            new AuthSmsFirebaseSocketResponse("ERROR", "BAD_REQUEST", null)));
+                            new AuthSmsFirebaseSocketResponse("ERROR", "BAD_REQUEST")));
                     socketSessionPool.closeSession(session, CloseStatus.NORMAL);
                 }
             });
             return new GeneralSocketResponse<>(getActionType(),
-                    new AuthSmsFirebaseSocketResponse("WAIT", null, null));
+                    new AuthSmsFirebaseSocketResponse("WAIT"));
         } catch (Exception ex) {
             throw new AuthSocketException("AUTHORIZATION_ERROR", ex);
         }

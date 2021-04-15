@@ -1,6 +1,7 @@
 package com.era.tofate.entities.tip;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,6 +15,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "tips")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Tip {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

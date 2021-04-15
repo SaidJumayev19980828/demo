@@ -5,7 +5,9 @@ import com.era.tofate.entities.socialstatus.SocialStatus;
 import com.era.tofate.entities.userrole.UserRole;
 import com.era.tofate.enums.AuthType;
 import com.era.tofate.enums.Sex;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,6 +25,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "users")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,6 +38,7 @@ public class User {
 
     private String login;
 
+    @JsonIgnore
     private String password;
 
     @Column(name = "first_name")
@@ -43,7 +47,7 @@ public class User {
     @Column(name = "last_name")
     private String lastName;
 
-    private int age;
+    private Long age;
 
     @Column(name = "about_myself", columnDefinition = "TEXT")
     private String aboutMyself;
@@ -53,11 +57,11 @@ public class User {
 
     @Column(name = "auth_type")
     @Enumerated(value = EnumType.STRING)
+    @JsonIgnore
     private AuthType authType;
 
     @ManyToOne
     @JoinColumn(name = "social_status_id")
-    @JsonIgnore
     private SocialStatus socialStatus;
 
     @ManyToOne
@@ -65,41 +69,35 @@ public class User {
     @JsonIgnore
     private Country country;
 
+    @JoinColumn(name = "country_str")
+    @JsonIgnore
+    private String countryStr;
+
     @Column(name = "time_zone")
     private String timeZone;
 
     @Column(name = "work_time_begin")
+    @JsonFormat(pattern="HH.mm")
     private LocalTime workTimeBegin;
 
     @Column(name = "work_time_end")
+    @JsonFormat(pattern="HH.mm")
     private LocalTime workTimeEnd;
 
     @Column(name = "sleep_time_begin")
+    @JsonFormat(pattern="HH.mm")
     private LocalTime sleepTimeBegin;
 
     @Column(name = "sleep_time_end")
+    @JsonFormat(pattern="HH.mm")
     private LocalTime sleepTimeEnd;
 
-    @Column(name = "weekends_begin")
-    private Date weekendsBegin;
-
-    @Column(name = "weekends_end")
-    private Date weekendsEnd;
+    @Column(name = "weekends")
+    private String weekends;
 
     @Column(name = "enabled")
+    @JsonIgnore
     private boolean enabled;
-
-    @Column(name = "sms_code")
-    @JsonIgnore
-    private String smsCode;
-
-    @Column(name = "sms_code_send_date")
-    @JsonIgnore
-    private Date smsCodeSendDate;
-
-    @Column(name = "sms_code_enter_count")
-    @JsonIgnore
-    private Long smsCodeEnterCount;
 
     @Column(name = "date_create")
     @JsonIgnore

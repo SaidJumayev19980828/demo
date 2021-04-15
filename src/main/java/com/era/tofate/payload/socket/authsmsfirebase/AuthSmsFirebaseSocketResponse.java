@@ -13,4 +13,14 @@ public class AuthSmsFirebaseSocketResponse {
     private String status;
     private String statusAuth;
     private String token;
+    private Boolean isProfileFilled;
+
+    public AuthSmsFirebaseSocketResponse(String status, String statusAuth) {
+        this.status = status;
+        this.statusAuth = statusAuth;
+    }
+
+    public AuthSmsFirebaseSocketResponse(String status) {
+        this.status = status;
+    }
 }

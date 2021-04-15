@@ -33,4 +33,9 @@ public class TipServiceImpl implements TipService {
     public List<Tip> getAll() {
         return repository.findAll();
     }
+
+    @Override
+    public List<Tip> findAllByOrderBySequenceNumberAsc() {
+        return repository.findAllByOrderBySequenceNumberAsc();
+    }
 }

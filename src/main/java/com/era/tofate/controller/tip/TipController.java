@@ -52,7 +52,7 @@ public class TipController {
      */
     @GetMapping("/api/user/tip")
     public ResponseEntity<?> getTips() {
-        return ResponseEntity.ok(tipService.getAll());
+        return ResponseEntity.ok(tipService.findAllByOrderBySequenceNumberAsc());
     }
 
     /**

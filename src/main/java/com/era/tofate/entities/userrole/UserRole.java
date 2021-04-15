@@ -3,6 +3,7 @@ package com.era.tofate.entities.userrole;
 import com.era.tofate.entities.user.User;
 import com.era.tofate.enums.Role;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,6 +17,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "user_role")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class UserRole {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
