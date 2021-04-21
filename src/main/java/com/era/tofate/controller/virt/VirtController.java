@@ -24,7 +24,7 @@ public class VirtController {
     private final VirtService virtService;
 
     @PostMapping("/api/virt/gender")
-    public ResponseEntity<?> createVirt(@CurrentUser UserPrincipal userPrincipal, VirtRequest virtRequest){
+    public ResponseEntity<?> gender(@CurrentUser UserPrincipal userPrincipal, VirtRequest virtRequest){
         if (userService.findById(userPrincipal.getId()).isPresent()) {
             if (virtService.findById(virtRequest.getId()).isPresent()){
                 if (virtRequest.getSex().getSex().equals("male") || virtRequest.getSex().getSex().equals("female")){
@@ -37,6 +37,23 @@ public class VirtController {
                     throw new BadRequestException(GENDER_IS_NOT_VALID);
                 }
             }else {
+                throw new BadRequestException(VIRT_NOT_FOUND);
+            }
+        }else {
+            throw new BadRequestException(NO_ACCESS);
+        }
+    }
+    @PostMapping("/api/virt/new")
+    public ResponseEntity<?> createVirt(@CurrentUser UserPrincipal userPrincipal, VirtRequest virtRequest){
+        if (userService.findById(userPrincipal.getId()).isPresent()) {
+            if (virtService.findById(virtRequest.getId()).isPresent()){
+                Virt virt = new Virt();
+                virt.setId(virtRequest.getId());
+                //TODO create new Virt
+                virtService.save(virt);
+                return ResponseEntity.ok(new VirtResponse(virt.getId(),virt.getSex()));
+            }else {
+                //TODO update Virt
                 throw new BadRequestException(VIRT_NOT_FOUND);
             }
         }else {
