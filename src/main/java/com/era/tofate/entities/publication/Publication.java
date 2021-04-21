@@ -12,7 +12,9 @@ import lombok.Setter;
 
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -37,5 +39,5 @@ public class Publication {
     private String textPub;
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "publication", cascade = CascadeType.ALL)
     @JsonIgnore
-    private List<Photo> photos;
+    private Set<Photo> photos = new HashSet<>();
 }
