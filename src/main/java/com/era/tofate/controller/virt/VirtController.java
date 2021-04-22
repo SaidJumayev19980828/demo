@@ -17,7 +17,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.era.tofate.exceptions.ExceptionConstants.*;
 
@@ -49,9 +51,11 @@ public class VirtController {
             throw new BadRequestException(NO_ACCESS);
         }
     }
-    public List<VirtResponse> virtResponsesByGender(Page<Virt> virts){
+    public Map<String, Object> virtResponsesByGender(Page<Virt> virts){
         List<VirtResponse> virtResponse = new ArrayList<>();
         virts.forEach(virt -> virtResponse.add(new VirtResponse(virt)));
-        return virtResponse;
+        Map<String, Object> response = new HashMap<>();
+        response.put("virts",virtResponse);
+        return response;
     }
 }
