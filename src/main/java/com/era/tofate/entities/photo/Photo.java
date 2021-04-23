@@ -1,7 +1,6 @@
 package com.era.tofate.entities.photo;
 
 import com.era.tofate.entities.publication.Publication;
-import com.era.tofate.entities.virt.Virt;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
@@ -10,7 +9,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.security.PublicKey;
 
 @Entity
 @Getter
