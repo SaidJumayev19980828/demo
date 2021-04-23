@@ -32,7 +32,7 @@ public class VirtController {
     private final UserService userService;
     private final VirtService virtService;
     /**
-     * Updating user information
+     * getting List of Virt by Gender and by Page
      *
      * @param userPrincipal - authorized user
      * @param sex - Gender Enum
