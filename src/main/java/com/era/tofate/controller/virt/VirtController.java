@@ -3,8 +3,6 @@ package com.era.tofate.controller.virt;
 import com.era.tofate.entities.virt.Virt;
 import com.era.tofate.enums.Sex;
 import com.era.tofate.exceptions.BadRequestException;
-import com.era.tofate.payload.virt.VirtRequest;
-import com.era.tofate.payload.virt.VirtRequestByGender;
 import com.era.tofate.payload.virt.VirtResponse;
 import com.era.tofate.security.CurrentUser;
 import com.era.tofate.security.UserPrincipal;
@@ -24,7 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.era.tofate.exceptions.ExceptionConstants.*;
+import static com.era.tofate.exceptions.ExceptionConstants.NO_ACCESS;
 
 @RestController
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -32,6 +30,7 @@ public class VirtController {
     private final UserService userService;
     private final VirtService virtService;
     /**
+     *
      * getting List of Virt by Gender and by Page
      *
      * @param userPrincipal - authorized user
@@ -41,7 +40,10 @@ public class VirtController {
      * @return Map<String,List<VirtResponse>>
      */
     @GetMapping("/api/virt/all")
-    public ResponseEntity<?> gender(@CurrentUser UserPrincipal userPrincipal, @RequestParam Sex sex,@RequestParam int page, @RequestParam int pageSize){
+    public ResponseEntity<?> gender(@CurrentUser UserPrincipal userPrincipal,
+                                    @RequestParam Sex sex,
+                                    @RequestParam int page,
+                                    @RequestParam int pageSize){
         if (userService.findById(userPrincipal.getId()).isPresent()) {
             Page<Virt> virtsByGender = virtService.findAllBySex(sex,page,pageSize);
             return ResponseEntity.ok(virtResponsesByGender(virtsByGender));
@@ -50,6 +52,7 @@ public class VirtController {
         }
     }
     /**
+     *
      * Create new Virt
      *
      * @param userPrincipal - authorized user
