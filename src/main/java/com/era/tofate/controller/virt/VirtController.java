@@ -40,7 +40,7 @@ public class VirtController {
      * @param pageSize - Size of page
      * @return Map<String,List<VirtResponse>>
      */
-    @GetMapping("/api/virt/byGender")
+    @GetMapping("/api/virt/all")
     public ResponseEntity<?> gender(@CurrentUser UserPrincipal userPrincipal, @RequestParam Sex sex,@RequestParam int page, @RequestParam int pageSize){
         if (userService.findById(userPrincipal.getId()).isPresent()) {
             Page<Virt> virtsByGender = virtService.findAllBySex(sex,page,pageSize);
