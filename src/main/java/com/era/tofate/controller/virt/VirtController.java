@@ -50,7 +50,7 @@ public class VirtController {
         }
     }
     /**
-     * Updating user information
+     * Create new Virt
      *
      * @param userPrincipal - authorized user
      * @param virt - Virt Entity
