@@ -1,6 +1,7 @@
 package com.era.tofate.controller.virt;
 
 import com.era.tofate.entities.virt.Virt;
+import com.era.tofate.enums.Sex;
 import com.era.tofate.exceptions.BadRequestException;
 import com.era.tofate.payload.virt.VirtRequest;
 import com.era.tofate.payload.virt.VirtRequestByGender;
@@ -15,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -33,22 +35,27 @@ public class VirtController {
      * Updating user information
      *
      * @param userPrincipal - authorized user
-     * @param virtRequest - User Entity
+     * @param sex - Gender Enum
+     * @param page - number of page
+     * @param pageSize - Size of page
      * @return Map<String,List<VirtResponse>>
      */
     @GetMapping("/api/virt/byGender")
-    public ResponseEntity<?> gender(@CurrentUser UserPrincipal userPrincipal, VirtRequestByGender virtRequest){
+    public ResponseEntity<?> gender(@CurrentUser UserPrincipal userPrincipal, @RequestParam Sex sex,@RequestParam int page, @RequestParam int pageSize){
         if (userService.findById(userPrincipal.getId()).isPresent()) {
-            if (virtRequest.getSex().getSex().equals("male") || virtRequest.getSex().getSex().equals("female")){
-                Page<Virt> virtsByGender = virtService.findAllBySex(virtRequest.getSex(),virtRequest.getPage(),virtRequest.getPageSize());
-                return ResponseEntity.ok(virtResponsesByGender(virtsByGender));
-            }else {
-                throw new BadRequestException(GENDER_IS_NOT_VALID);
-            }
+            Page<Virt> virtsByGender = virtService.findAllBySex(sex,page,pageSize);
+            return ResponseEntity.ok(virtResponsesByGender(virtsByGender));
         }else {
             throw new BadRequestException(NO_ACCESS);
         }
     }
+    /**
+     * Updating user information
+     *
+     * @param userPrincipal - authorized user
+     * @param virt - Virt Entity
+     * @return VirtResponse Entity
+     */
     @PostMapping("/api/virt/new")
     public ResponseEntity<?> createVirt(@CurrentUser UserPrincipal userPrincipal, Virt virt){
         if (userService.findById(userPrincipal.getId()).isPresent()) {
