@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -28,8 +29,14 @@ import static com.era.tofate.exceptions.ExceptionConstants.*;
 public class VirtController {
     private final UserService userService;
     private final VirtService virtService;
-
-    @PostMapping("/api/virt/byGender")
+    /**
+     * Updating user information
+     *
+     * @param userPrincipal - authorized user
+     * @param virtRequest - User Entity
+     * @return Map<String,List<VirtResponse>>
+     */
+    @GetMapping("/api/virt/byGender")
     public ResponseEntity<?> gender(@CurrentUser UserPrincipal userPrincipal, VirtRequestByGender virtRequest){
         if (userService.findById(userPrincipal.getId()).isPresent()) {
             if (virtRequest.getSex().getSex().equals("male") || virtRequest.getSex().getSex().equals("female")){
