@@ -29,8 +29,8 @@ import static com.era.tofate.exceptions.ExceptionConstants.NO_ACCESS;
 public class VirtController {
     private final UserService userService;
     private final VirtService virtService;
+
     /**
-     *
      * getting List of Virt by Gender and by Page
      *
      * @param userPrincipal - authorized user
@@ -51,8 +51,8 @@ public class VirtController {
             throw new BadRequestException(NO_ACCESS);
         }
     }
+
     /**
-     *
      * Create new Virt
      *
      * @param userPrincipal - authorized user
