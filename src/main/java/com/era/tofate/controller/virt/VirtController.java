@@ -45,7 +45,7 @@ public class VirtController {
                                     @RequestParam int page,
                                     @RequestParam int pageSize){
         if (userService.findById(userPrincipal.getId()).isPresent()) {
-            Page<Virt> virtsByGender = virtService.findAllBySex(sex,page,pageSize);
+            Page<Virt> virtsByGender = virtService.findAllBySex(sex, page, pageSize);
             return ResponseEntity.ok(virtResponsesByGender(virtsByGender));
         }else {
             throw new BadRequestException(NO_ACCESS);
@@ -63,7 +63,7 @@ public class VirtController {
     public ResponseEntity<?> createVirt(@CurrentUser UserPrincipal userPrincipal, Virt virt){
         if (userService.findById(userPrincipal.getId()).isPresent()) {
             virtService.save(virt);
-            return ResponseEntity.ok(new VirtResponse(virt.getId(),virt.getSex()));
+            return ResponseEntity.ok(new VirtResponse(virt.getId(), virt.getSex()));
         }else {
             throw new BadRequestException(NO_ACCESS);
         }
@@ -72,7 +72,7 @@ public class VirtController {
         List<VirtResponse> virtResponse = new ArrayList<>();
         virts.forEach(virt -> virtResponse.add(new VirtResponse(virt)));
         Map<String, Object> response = new HashMap<>();
-        response.put("virts",virtResponse);
+        response.put("virts", virtResponse);
         return response;
     }
 }
