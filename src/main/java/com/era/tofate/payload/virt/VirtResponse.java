@@ -23,5 +23,6 @@ public class VirtResponse {
         this.avatar = virt.getAvatar();
         this.about = virt.getAbout();
         this.sex = virt.getSex();
+        this.name = virt.getName();
     }
 }

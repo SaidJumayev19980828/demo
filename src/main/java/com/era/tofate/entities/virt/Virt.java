@@ -1,8 +1,6 @@
 package com.era.tofate.entities.virt;
 
 import com.era.tofate.entities.publication.Publication;
-import com.era.tofate.entities.user.User;
-import com.era.tofate.entities.userrole.UserRole;
 import com.era.tofate.enums.Sex;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -12,9 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Getter
@@ -51,8 +47,5 @@ public class Virt {
     private Sex sex;
     @Column(name = "age")
     private Long age;
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "virt", cascade = CascadeType.ALL)
-    @JsonIgnore
-    private Set<User> users = new HashSet<>();
 
 }

@@ -3,7 +3,6 @@ package com.era.tofate.entities.user;
 import com.era.tofate.entities.country.Country;
 import com.era.tofate.entities.socialstatus.SocialStatus;
 import com.era.tofate.entities.userrole.UserRole;
-import com.era.tofate.entities.virt.Virt;
 import com.era.tofate.enums.AuthType;
 import com.era.tofate.enums.Sex;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -69,11 +68,6 @@ public class User {
     @JoinColumn(name = "country_id")
     @JsonIgnore
     private Country country;
-
-    @ManyToOne
-    @JoinColumn(name = "virt_id")
-    @JsonIgnore
-    private Virt virt;
 
     @JoinColumn(name = "country_str")
     @JsonIgnore
