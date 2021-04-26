@@ -41,6 +41,7 @@ public class Virt {
     @Column(name = "status")
     private String status;
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "virt", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Publication> publications;
     @Enumerated(value = EnumType.STRING)
     private Sex sex;

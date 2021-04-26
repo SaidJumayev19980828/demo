@@ -4,6 +4,7 @@ import com.era.tofate.entities.virt.Virt;
 import com.era.tofate.enums.Sex;
 import com.era.tofate.exceptions.BadRequestException;
 import com.era.tofate.payload.virt.VirtResponse;
+import com.era.tofate.payload.virt.VirtResponseDetailed;
 import com.era.tofate.security.CurrentUser;
 import com.era.tofate.security.UserPrincipal;
 import com.era.tofate.service.user.UserService;
@@ -63,7 +64,8 @@ public class VirtController {
     public ResponseEntity<?> byId(@CurrentUser UserPrincipal userPrincipal, @RequestParam Long virtId){
         if (userService.findById(userPrincipal.getId()).isPresent()) {
             Virt virt = virtService.findById(virtId).get();
-            return ResponseEntity.ok(virt);
+
+            return ResponseEntity.ok(new VirtResponseDetailed(virt));
         }else {
             throw new BadRequestException(NO_ACCESS);
         }

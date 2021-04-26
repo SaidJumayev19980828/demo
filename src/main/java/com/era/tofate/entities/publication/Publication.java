@@ -29,6 +29,7 @@ public class Publication {
     @JsonIgnore
     private Long id;
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "avatar_id")
     private Virt virt;
 
