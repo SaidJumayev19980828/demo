@@ -59,7 +59,7 @@ public class VirtController {
      * @param virtId - id of Virt
      * @return Virt - Virt Entity
      */
-    @GetMapping("api/virt")
+    @GetMapping("/api/virt")
     public ResponseEntity<?> byId(@CurrentUser UserPrincipal userPrincipal, @RequestParam Long virtId){
         if (userService.findById(userPrincipal.getId()).isPresent()) {
             Virt virt = virtService.findById(virtId).get();
