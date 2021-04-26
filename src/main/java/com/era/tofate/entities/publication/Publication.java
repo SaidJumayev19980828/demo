@@ -38,6 +38,5 @@ public class Publication {
     @Column(name = "text_pub", columnDefinition = "TEXT")
     private String textPub;
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "publication", cascade = CascadeType.ALL)
-    @JsonIgnore
     private Set<Photo> photos = new HashSet<>();
 }
