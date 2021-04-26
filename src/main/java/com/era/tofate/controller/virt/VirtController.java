@@ -64,7 +64,6 @@ public class VirtController {
     public ResponseEntity<?> byId(@CurrentUser UserPrincipal userPrincipal, @RequestParam Long virtId){
         if (userService.findById(userPrincipal.getId()).isPresent()) {
             Virt virt = virtService.findById(virtId).get();
-
             return ResponseEntity.ok(new VirtResponseDetailed(virt));
         }else {
             throw new BadRequestException(NO_ACCESS);
