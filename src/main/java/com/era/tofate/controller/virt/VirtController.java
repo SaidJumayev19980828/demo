@@ -40,10 +40,14 @@ public class VirtController {
      */
     @GetMapping("/api/virt/all")
     public ResponseEntity<?> gender(@CurrentUser UserPrincipal userPrincipal,
-                                    @RequestParam Sex sex,
+                                    @RequestParam(required = false) Sex sex,
                                     @RequestParam int page,
                                     @RequestParam int pageSize){
         if (userService.findById(userPrincipal.getId()).isPresent()) {
+            if (sex == null){
+                Page<Virt> virtsByGender = virtService.findAll(page, pageSize);
+                return ResponseEntity.ok(virtResponsesByGender(virtsByGender));
+            }
             Page<Virt> virtsByGender = virtService.findAllBySex(sex, page, pageSize);
             return ResponseEntity.ok(virtResponsesByGender(virtsByGender));
         }else {
@@ -98,7 +102,7 @@ public class VirtController {
         virts.forEach(virt -> virtResponse.add(new VirtResponse(virt)));
         Map<String, Object> response = new HashMap<>();
         response.put("virts", virtResponse);
-        return response;//test
+        return response;
     }
     private Virt virtRequestToVirt(VirtRequest virtRequest, Virt virt){
         Optional<String>        name = Optional.ofNullable(virtRequest.getName());
