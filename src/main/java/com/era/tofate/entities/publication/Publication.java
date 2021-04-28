@@ -12,6 +12,7 @@ import lombok.Setter;
 
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -39,4 +40,7 @@ public class Publication {
     private String textPub;
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "publication", cascade = CascadeType.ALL)
     private Set<Photo> photos = new HashSet<>();
+
+    private LocalDateTime publicationDate;
+
 }
