@@ -20,5 +20,7 @@ public class VirtRequest {
     private String status;
     private Sex sex;
     private List<Publication> publications;
+    private Long age;
+
 
 }

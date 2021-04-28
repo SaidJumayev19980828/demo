@@ -1,8 +1,10 @@
 package com.era.tofate.controller.virt;
 
+import com.era.tofate.entities.publication.Publication;
 import com.era.tofate.entities.virt.Virt;
 import com.era.tofate.enums.Sex;
 import com.era.tofate.exceptions.BadRequestException;
+import com.era.tofate.payload.virt.VirtRequest;
 import com.era.tofate.payload.virt.VirtResponse;
 import com.era.tofate.security.CurrentUser;
 import com.era.tofate.security.UserPrincipal;
@@ -17,10 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.era.tofate.exceptions.ExceptionConstants.NO_ACCESS;
 
@@ -73,14 +72,22 @@ public class VirtController {
      * Create new Virt
      *
      * @param userPrincipal - authorized user
-     * @param virt - Virt Entity
+     * @param virtRequest - Virt Entity
      * @return VirtResponse Entity
      */
-    @PostMapping("/api/virt/new")
-    public ResponseEntity<?> createVirt(@CurrentUser UserPrincipal userPrincipal, Virt virt){
+    @PostMapping("/api/admin/virt/new")
+    public ResponseEntity<?> createVirt(@CurrentUser UserPrincipal userPrincipal, VirtRequest virtRequest){
         if (userService.findById(userPrincipal.getId()).isPresent()) {
-            virtService.save(virt);
-            return ResponseEntity.ok(new VirtResponse(virt.getId(), virt.getSex()));
+            Virt existingVirt;
+            if (userService.findById(virtRequest.getId()).isPresent()){
+                existingVirt = virtRequestToVirt(virtRequest);
+                existingVirt.setId(userPrincipal.getId());
+                existingVirt = virtService.save(existingVirt);
+                return ResponseEntity.ok(existingVirt);
+            }else {
+                existingVirt = virtService.save(virtRequestToVirt(virtRequest));
+            }
+            return ResponseEntity.ok(existingVirt);
         }else {
             throw new BadRequestException(NO_ACCESS);
         }
@@ -91,5 +98,30 @@ public class VirtController {
         Map<String, Object> response = new HashMap<>();
         response.put("virts", virtResponse);
         return response;
+    }
+    private Virt virtRequestToVirt(VirtRequest virtRequest){
+        Virt virt = virtService.findById(virtRequest.getId()).get();
+        Optional<String>        name = Optional.ofNullable(virtRequest.getName());
+        Optional<String>        about = Optional.ofNullable(virtRequest.getAbout());
+        Optional<String>        avatar = Optional.ofNullable(virtRequest.getAvatar());
+        Optional<Long>          age = Optional.ofNullable(virtRequest.getAge());
+        Optional<String>        lkLableOne = Optional.ofNullable(virtRequest.getLkLableOne());
+        Optional<Sex>           sex = Optional.ofNullable(virtRequest.getSex());
+        Optional<Integer>       publicPostQuantity = Optional.ofNullable(virtRequest.getPublicPostQuantity());
+        Optional<Integer>       subscribersQuantity = Optional.ofNullable(virtRequest.getSubscribersQuantity());
+        Optional<Integer>       subscriptionQuantity = Optional.ofNullable(virtRequest.getSubscriptionQuantity());
+
+        Optional<List<Publication>>        publications = Optional.ofNullable(virtRequest.getPublications());
+        name.ifPresent(virt::setName);
+        about.ifPresent(virt::setAbout);
+        avatar.ifPresent(virt::setAvatar);
+        age.ifPresent(virt::setAge);
+        lkLableOne.ifPresent(virt::setLkLableOne);
+        sex.ifPresent(virt::setSex);
+        publicPostQuantity.ifPresent(virt::setPublicPostQuantity);
+        subscribersQuantity.ifPresent(virt::setSubscribersQuantity);
+        subscriptionQuantity.ifPresent(virt::setSubscriptionQuantity);
+        publications.ifPresent(virt::setPublications);
+        return virt;
     }
 }

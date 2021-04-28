@@ -136,3 +136,4 @@ Caused by: java.lang.IllegalArgumentException: Could not resolve placeholder 'jw
 2021-04-28 13:59:26.245  WARN 60178 --- [http-nio-8080-exec-7] o.s.web.servlet.PageNotFound             : No mapping for GET /
 2021-04-28 13:59:26.282  WARN 60178 --- [http-nio-8080-exec-8] o.s.web.servlet.PageNotFound             : No mapping for GET /csrf
 2021-04-28 14:03:08.506  WARN 60220 --- [restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2021-04-28 15:39:00.386  WARN 61112 --- [restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
