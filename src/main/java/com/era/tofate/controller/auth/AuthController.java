@@ -27,10 +27,10 @@ public class AuthController {
     private final UserService service;
 
     /**
-     * Авторизация пользователя
+     * User Authorisation
      *
-     * @param  request - Пользователь
-     * @return авторизационный токен
+     * @param  request - User
+     * @return authorised token
      */
     @PostMapping(value = "/api/users/auth", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<UserToken> auth(@RequestBody AuthRequest request) {
