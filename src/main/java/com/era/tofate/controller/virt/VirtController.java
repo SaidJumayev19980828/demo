@@ -80,12 +80,13 @@ public class VirtController {
         if (userService.findById(userPrincipal.getId()).isPresent()) {
             Virt existingVirt;
             if (userService.findById(virtRequest.getId()).isPresent()){
-                existingVirt = virtRequestToVirt(virtRequest);
+                existingVirt = virtService.findById(virtRequest.getId()).get();
+                existingVirt = virtRequestToVirt(virtRequest, existingVirt);
                 existingVirt.setId(userPrincipal.getId());
                 existingVirt = virtService.save(existingVirt);
                 return ResponseEntity.ok(existingVirt);
             }else {
-                existingVirt = virtService.save(virtRequestToVirt(virtRequest));
+                existingVirt = virtService.save(virtRequestToVirt(virtRequest, new Virt()));
             }
             return ResponseEntity.ok(existingVirt);
         }else {
@@ -99,8 +100,7 @@ public class VirtController {
         response.put("virts", virtResponse);
         return response;//test
     }
-    private Virt virtRequestToVirt(VirtRequest virtRequest){
-        Virt virt = virtService.findById(virtRequest.getId()).get();
+    private Virt virtRequestToVirt(VirtRequest virtRequest, Virt virt){
         Optional<String>        name = Optional.ofNullable(virtRequest.getName());
         Optional<String>        about = Optional.ofNullable(virtRequest.getAbout());
         Optional<String>        avatar = Optional.ofNullable(virtRequest.getAvatar());
