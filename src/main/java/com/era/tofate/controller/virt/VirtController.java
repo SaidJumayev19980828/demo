@@ -97,7 +97,7 @@ public class VirtController {
         virts.forEach(virt -> virtResponse.add(new VirtResponse(virt)));
         Map<String, Object> response = new HashMap<>();
         response.put("virts", virtResponse);
-        return response;
+        return response;//test
     }
     private Virt virtRequestToVirt(VirtRequest virtRequest){
         Virt virt = virtService.findById(virtRequest.getId()).get();
