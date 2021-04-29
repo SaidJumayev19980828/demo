@@ -66,7 +66,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/**/*.js")
                 .permitAll()
                 .antMatchers("/api/user/auth/**", "/api/request", "/api/user/socialstatus/**").permitAll()
-                .antMatchers("/api/user/account/**","/api/virt","/api/virt/all","/api/virt/publication/").hasAuthority("USER")
+                .antMatchers("/api/user/account/**","/api/virt/**").hasAuthority("USER")
                 .antMatchers("/api/admin/virt/**").hasAuthority("ROOTADMIN")
         ;
 
