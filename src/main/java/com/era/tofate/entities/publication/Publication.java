@@ -27,7 +27,6 @@ import java.util.Set;
 public class Publication {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonIgnore
     private Long id;
     @ManyToOne
     @JoinColumn(name = "avatar_id")

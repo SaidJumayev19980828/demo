@@ -14,10 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
@@ -49,6 +46,7 @@ public class VirtController {
                 return ResponseEntity.ok(virtResponsesByGender(virtsByGender));
             }
             Page<Virt> virtsByGender = virtService.findAllBySex(sex, page, pageSize);
+
             return ResponseEntity.ok(virtResponsesByGender(virtsByGender));
         }else {
             throw new BadRequestException(NO_ACCESS);
@@ -66,6 +64,8 @@ public class VirtController {
     public ResponseEntity<?> byId(@CurrentUser UserPrincipal userPrincipal, @RequestParam Long virtId){
         if (userService.findById(userPrincipal.getId()).isPresent()) {
             Virt virt = virtService.findById(virtId).get();
+            virt.getPublications().forEach(publication -> publication.setVirt(null));
+
             return ResponseEntity.ok(virt);
         }else {
             throw new BadRequestException(NO_ACCESS);
@@ -80,18 +80,20 @@ public class VirtController {
      * @return VirtResponse Entity
      */
     @PostMapping("/api/admin/virt/new")
-    public ResponseEntity<?> createVirt(@CurrentUser UserPrincipal userPrincipal, VirtRequest virtRequest){
+    public ResponseEntity<?> createVirt(@CurrentUser UserPrincipal userPrincipal, @RequestBody VirtRequest virtRequest){
         if (userService.findById(userPrincipal.getId()).isPresent()) {
             Virt existingVirt;
-            if (userService.findById(virtRequest.getId()).isPresent()){
-                existingVirt = virtService.findById(virtRequest.getId()).get();
-                existingVirt = virtRequestToVirt(virtRequest, existingVirt);
-                existingVirt.setId(userPrincipal.getId());
-                existingVirt = virtService.save(existingVirt);
-                return ResponseEntity.ok(existingVirt);
-            }else {
-                existingVirt = virtService.save(virtRequestToVirt(virtRequest, new Virt()));
+            if (virtRequest.getId() != null){
+                if (userService.findById(virtRequest.getId()).isPresent()) {
+                    existingVirt = virtService.findById(virtRequest.getId()).get();
+                    existingVirt = virtRequestToVirt(virtRequest, existingVirt);
+                    existingVirt.setId(userPrincipal.getId());
+                    existingVirt = virtService.save(existingVirt);
+                    return ResponseEntity.ok(existingVirt);
+                }
             }
+            existingVirt = virtService.save(virtRequestToVirt(virtRequest, new Virt()));
+            existingVirt.getPublications().forEach(publication -> publication.setVirt(null));
             return ResponseEntity.ok(existingVirt);
         }else {
             throw new BadRequestException(NO_ACCESS);

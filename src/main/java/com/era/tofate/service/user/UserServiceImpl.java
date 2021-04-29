@@ -34,19 +34,12 @@ public class UserServiceImpl implements UserService {
     }
     @Override
     public UserToken auth(String login, String password) {
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-
         try {
             Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                     login, password));
-
-            User currentUser = repository.findByLogin(login).get();
-
             SecurityContextHolder.getContext().setAuthentication(authentication);
             String token = tokenProviderService.createToken(authentication);
-            Role role = currentUser.getRoles().stream().findFirst().get().getRole();
-
-            UserToken userToken = new UserToken(role, token, "Bearer");
+            UserToken userToken = new UserToken(token, "Bearer");
             return userToken;
         } catch (Exception ex) {
             throw ex;

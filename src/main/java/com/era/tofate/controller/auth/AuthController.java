@@ -32,7 +32,7 @@ public class AuthController {
      * @param  request - User
      * @return authorised token
      */
-    @PostMapping(value = "/api/users/auth", produces = {MediaType.APPLICATION_JSON_VALUE})
+    @PostMapping(value = "/api/user/auth", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<UserToken> auth(@RequestBody AuthRequest request) {
         try {
             UserToken response = service.auth(request.getLogin(), request.getPassword());

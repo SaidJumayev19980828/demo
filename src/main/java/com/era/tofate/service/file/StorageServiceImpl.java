@@ -30,12 +30,14 @@ public class StorageServiceImpl implements StorageService{
 
         try {
             byte[] bytes = file.getBytes();
-            Path path = Paths.get(fileFolderUrl + file.getOriginalFilename());
+            String fileUrl = fileFolderUrl + file.getOriginalFilename();
+            Path path = Paths.get(fileUrl);
             if (Files.exists(path)){
-                path = Paths.get(fileFolderUrl + UUID.randomUUID().toString().substring(0,10) + "-" + file.getOriginalFilename());
+                fileUrl = fileFolderUrl + UUID.randomUUID().toString().substring(0,10) + "-" + file.getOriginalFilename();
+                path = Paths.get(fileUrl);
             }
             Files.write(path, bytes);
-            return file.getOriginalFilename();
+            return fileUrl;
         } catch (IOException e) {
             e.printStackTrace();
         }

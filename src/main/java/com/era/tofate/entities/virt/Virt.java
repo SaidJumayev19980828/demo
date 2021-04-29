@@ -22,7 +22,6 @@ import java.util.List;
 public class Virt {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonIgnore
     private Long id;
     @Column(name = "virt_name")
     private String name;

@@ -1,9 +1,7 @@
 package com.era.tofate.service.publication;
 
 import com.era.tofate.entities.publication.Publication;
-import com.era.tofate.entities.virt.Virt;
 import com.era.tofate.repository.publication.PublicationRepository;
-import com.era.tofate.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -31,12 +29,33 @@ public class PublicationServiceImpl implements PublicationService {
 
     @Override
     public Optional<Publication> findById(Long id) {
-        return findById(id);
+        return repository.findById(id);
     }
 
     @Override
-    public Publication save(Publication object) {
-        return repository.save(object);
+    public Publication save(Publication publication) {
+        return repository.saveAndFlush(publication);
+        /*
+        Set<Photo> photoSet = publication.getPhotos();
+
+        publication.setPhotos(new HashSet<>());
+        Publication savedPub = repository.saveAndFlush(publication);
+        Set<Photo> savedPhotoSet = publication.getPhotos();
+
+        photoSet.forEach(photo -> {
+            if (photo.getId() != null){
+                if (photoService.findById(photo.getId()).isPresent()){
+                    photo = photoService.findById(photo.getId()).get();
+                    photo.setPublication(savedPub);
+                    Photo savedPhoto = photoService.save(photo);
+                    savedPhotoSet.add(savedPhoto);
+                }
+            }
+        });
+        savedPub.setPhotos(photoService.findAllByPublicationId(publication.getId()));
+        return savedPub;
+
+         */
     }
 
     @Override
