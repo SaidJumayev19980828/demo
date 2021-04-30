@@ -39,7 +39,7 @@ public class AuthController {
             if (response != null){
                 response.setRoles(userRoleService.findAllByUser_Login(request.getLogin()));
                 return new ResponseEntity<>(response, HttpStatus.OK);
-            }else {
+            } else {
                 throw new AuthenticationException(NO_ACCESS);
             }
         } catch (Exception ex) {

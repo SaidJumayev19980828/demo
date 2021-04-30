@@ -48,7 +48,7 @@ public class VirtController {
             Page<Virt> virtsByGender = virtService.findAllBySex(sex, page, pageSize);
 
             return ResponseEntity.ok(virtResponsesByGender(virtsByGender));
-        }else {
+        } else {
             throw new BadRequestException(NO_ACCESS);
         }
     }
@@ -67,7 +67,7 @@ public class VirtController {
             virt.getPublications().forEach(publication -> publication.setVirt(null));
 
             return ResponseEntity.ok(virt);
-        }else {
+        } else {
             throw new BadRequestException(NO_ACCESS);
         }
     }
@@ -95,7 +95,7 @@ public class VirtController {
             existingVirt = virtService.save(virtRequestToVirt(virtRequest, new Virt()));
             existingVirt.getPublications().forEach(publication -> publication.setVirt(null));
             return ResponseEntity.ok(existingVirt);
-        }else {
+        } else {
             throw new BadRequestException(NO_ACCESS);
         }
     }

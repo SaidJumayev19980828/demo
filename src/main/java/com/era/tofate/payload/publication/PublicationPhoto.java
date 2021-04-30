@@ -13,5 +13,4 @@ import java.util.Set;
 public class PublicationPhoto {
     private Long id;
     private Set<Photo> photos = new HashSet<>();
-
 }

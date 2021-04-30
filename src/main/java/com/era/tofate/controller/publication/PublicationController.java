@@ -56,7 +56,7 @@ public class PublicationController {
             Publication savedPublication = savePubWithNewPhotos(publication);
             savedPublication.getVirt().setPublications(new ArrayList<>());
             return ResponseEntity.ok(savedPublication);
-        }else {
+        } else {
             throw new BadRequestException(NO_ACCESS);
         }
     }
@@ -81,7 +81,7 @@ public class PublicationController {
                 return ResponseEntity.ok(savedPublication);
             }
             throw new BadRequestException(PUBLICATION_NOT_FOUND);
-        }else {
+        } else {
             throw new BadRequestException(NO_ACCESS);
         }
     }
@@ -110,7 +110,7 @@ public class PublicationController {
                 return ResponseEntity.ok(savedPublication);
             }
             throw new BadRequestException(PUBLICATION_NOT_FOUND);
-        }else {
+        } else {
             throw new BadRequestException(NO_ACCESS);
         }
     }
@@ -156,7 +156,7 @@ public class PublicationController {
             photo.setUrl(fileUrl);
             photo = photoService.save(photo);
             return ResponseEntity.ok(photo);
-        }else {
+        } else {
             throw new BadRequestException(NO_ACCESS);
         }
     }
@@ -178,6 +178,7 @@ public class PublicationController {
         publicationDate.ifPresent(publicationRes::setPublicationDate);
         return publicationRes;
     }
+
     public Map<String, Object> pubResponses(Page<Publication> publications){
         publications.forEach(publication -> {
             Virt virt = publication.getVirt();
@@ -190,6 +191,7 @@ public class PublicationController {
         response.put("publications", publicationRes);
         return response;
     }
+
     private Publication savePubWithNewPhotos(Publication publication) {
         Set<Photo> photoSet = publication.getPhotos();
         //give null to photos in order to not save duplicate in db
