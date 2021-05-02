@@ -25,4 +25,6 @@ public class UserRequest {
     private String sleepTimeBegin;
     private String sleepTimeEnd;
     private List<Boolean> weekends;
+    private String password;
+
 }

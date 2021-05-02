@@ -2,26 +2,29 @@ package com.era.tofate.service.user;
 
 import com.era.tofate.entities.user.User;
 import com.era.tofate.enums.Role;
+import com.era.tofate.enums.RoleDto;
 import com.era.tofate.payload.auth.UserToken;
 import com.era.tofate.repository.user.UserRepository;
 import com.era.tofate.security.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.security.auth.message.AuthException;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class UserServiceImpl implements UserService {
     private final UserRepository repository;
+    private final JdbcTemplate jdbcTemplate;
+
     @Autowired
     private AuthenticationManager authenticationManager;
 
@@ -44,6 +47,15 @@ public class UserServiceImpl implements UserService {
         } catch (Exception ex) {
             throw ex;
         }
+    }
+
+    @Override
+    public List<Map<String,Object>> findAllByRolesContaining(RoleDto role, int page, int pageSize) {
+        return jdbcTemplate.queryForList("select * from users u inner join user_role ur on u.id = ur.user_id " +
+                "where ur.role = ? limit ?, ?",
+                role.getRoleName(),
+                (page - 1) * pageSize,
+                pageSize);
     }
 
     @Override

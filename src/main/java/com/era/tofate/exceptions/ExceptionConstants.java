@@ -12,5 +12,6 @@ public class ExceptionConstants {
     public static final String GENDER_IS_NOT_VALID = "gender is not valid";
     public static final String LOGIN_ALREADY_IN_USE = "login already in use";
     public static final String PUBLICATION_NOT_FOUND = "publication not found";
+    public static final String INVALID_ROLE = "invalid role";
 
 }

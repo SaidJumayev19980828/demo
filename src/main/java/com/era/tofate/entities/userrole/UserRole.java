@@ -32,4 +32,9 @@ public class UserRole {
     @Column(name = "role")
     @Enumerated(value = EnumType.STRING)
     private Role role;
+
+    public UserRole(User user, Role role) {
+        this.user = user;
+        this.role = role;
+    }
 }
