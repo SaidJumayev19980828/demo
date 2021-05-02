@@ -6,6 +6,7 @@ import com.era.tofate.payload.auth.UserToken;
 
 import com.era.tofate.service.user.UserService;
 import com.era.tofate.service.userrole.UserRoleService;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -32,6 +33,8 @@ public class AuthController {
      * @param  request - User
      * @return authorised token
      */
+    @ApiOperation(value = "Authentication using login and password",
+            notes = "Also returns a token to use other services")
     @PostMapping(value = "/api/user/auth", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<UserToken> auth(@RequestBody AuthRequest request) {
         try {

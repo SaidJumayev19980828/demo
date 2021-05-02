@@ -46,4 +46,7 @@ public class Virt {
     @Column(name = "age")
     private Long age;
 
+    public Virt(Long id) {
+        this.id = id;
+    }
 }

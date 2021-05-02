@@ -1,4 +1,4 @@
-package com.era.tofate.payload.file;
+package com.era.tofate.payload.virt;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class FilePath {
-    @ApiModelProperty(notes="path or url of file uploaded")
-    private String filePath;
+public class VirtId {
+    @ApiModelProperty(notes="id of virt")
+    private Long id;
 }
