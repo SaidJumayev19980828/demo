@@ -47,10 +47,10 @@ public class PhotoServiceImpl implements PhotoService{
 
     @Override
     public void deleteById(Long id){
-        if (repository.findById(id).isPresent()){
-            Photo photo = repository.findById(id).get();
-            photo.setDeleted(true);
-            repository.save(photo);
+        Optional<Photo> photo = repository.findById(id);
+        if (photo.isPresent()){
+            photo.get().setDeleted(true);
+            repository.save(photo.get());
         }
     }
 }

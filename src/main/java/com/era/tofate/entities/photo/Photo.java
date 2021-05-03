@@ -28,4 +28,8 @@ public class Photo {
     @JsonIgnore
     private Publication publication;
     private boolean deleted;
+
+    public Photo(Long id) {
+        this.id = id;
+    }
 }

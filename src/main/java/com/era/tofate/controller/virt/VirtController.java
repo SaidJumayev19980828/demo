@@ -11,6 +11,7 @@ import com.era.tofate.security.CurrentUser;
 import com.era.tofate.security.UserPrincipal;
 import com.era.tofate.service.user.UserService;
 import com.era.tofate.service.virt.VirtService;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -37,6 +38,8 @@ public class VirtController {
      * @return Map<String,List<VirtResponse>>
      */
     @GetMapping("/api/virt/all")
+    @ApiOperation(value = "Get virts with paging",
+            notes = "Returns list of virts by given paging. By gender if given")
     public ResponseEntity<?> gender(@CurrentUser UserPrincipal userPrincipal,
                                     @RequestParam(required = false) Sex sex,
                                     @RequestParam int page,
@@ -54,7 +57,7 @@ public class VirtController {
         }
     }
 
-    /**
+     /**
      * getting information about Virt by id
      *
      * @param userPrincipal - authorized user
@@ -62,21 +65,14 @@ public class VirtController {
      * @return Virt - Virt Entity
      */
     @GetMapping("/api/virt")
-    public ResponseEntity<?> createVirt(@CurrentUser UserPrincipal userPrincipal, @RequestBody VirtRequest virtRequest){
+    @ApiOperation(value = "Get virt by id",
+            notes = "Returns virt by given id")
+    public ResponseEntity<?> byId(@CurrentUser UserPrincipal userPrincipal, @RequestParam Long virtId){
         if (userService.findById(userPrincipal.getId()).isPresent()) {
-            Virt existingVirt;
-            if (virtRequest.getId() != null){
-                if (userService.findById(virtRequest.getId()).isPresent()) {
-                    existingVirt = virtService.findById(virtRequest.getId()).get();
-                    existingVirt = virtRequestToVirt(virtRequest, existingVirt);
-                    existingVirt.setId(userPrincipal.getId());
-                    existingVirt = virtService.save(existingVirt);
-                    return ResponseEntity.ok(existingVirt);
-                }
-            }
-            existingVirt = virtService.save(virtRequestToVirt(virtRequest, new Virt()));
-            existingVirt.getPublications().forEach(publication -> publication.setVirt(null));
-            return ResponseEntity.ok(existingVirt);
+            Virt virt = virtService.findById(virtId).get();
+            virt.getPublications().forEach(publication -> publication.setVirt(null));
+
+            return ResponseEntity.ok(virt);
         } else {
             throw new BadRequestException(NO_ACCESS);
         }
@@ -90,6 +86,8 @@ public class VirtController {
      * @return VirtResponse Entity
      */
     @PostMapping("/api/admin/virt/new")
+    @ApiOperation(value = "Create or Update virt ",
+            notes = "Returns created or updated virt")
     public ResponseEntity<?> createVirt(@CurrentUser UserPrincipal userPrincipal, @RequestBody VirtRequest virtRequest){
         if (userService.findById(userPrincipal.getId()).isPresent()) {
             Virt existingVirt;
