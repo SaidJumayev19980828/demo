@@ -2,29 +2,36 @@ package com.era.tofate.controller.user;
 
 import com.era.tofate.entities.socialstatus.SocialStatus;
 import com.era.tofate.entities.user.User;
+import com.era.tofate.entities.userrole.UserRole;
+import com.era.tofate.enums.Role;
+import com.era.tofate.enums.RoleDto;
 import com.era.tofate.enums.Sex;
 import com.era.tofate.exceptions.BadRequestException;
 import com.era.tofate.payload.user.UserRequest;
 import com.era.tofate.payload.user.UserResponse;
+import com.era.tofate.payload.user.UserResponseDto;
+import com.era.tofate.payload.user.UserRoleDto;
 import com.era.tofate.security.CurrentUser;
 import com.era.tofate.security.UserPrincipal;
 import com.era.tofate.service.socialstatus.SocialStatusService;
 import com.era.tofate.service.user.UserService;
-import java.util.List;
+import com.era.tofate.service.userrole.UserRoleService;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalTime;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
-import static com.era.tofate.exceptions.ExceptionConstants.NO_ACCESS;
+import static com.era.tofate.exceptions.ExceptionConstants.*;
 
 @RestController
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -32,6 +39,7 @@ public class UserController {
     private final UserService userService;
     private final SocialStatusService socialStatusService;
     private final PasswordEncoder passwordEncoder;
+    private final UserRoleService userRoleService;
 
 
     /**
@@ -42,6 +50,13 @@ public class UserController {
      * @return User Entity
      */
     @PostMapping("/api/user/account")
+    @ApiOperation(value = "Update user account",
+            notes = "Returns updated User entity")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Successful"),
+            @ApiResponse(code = 400, message = "Error with access"),
+            @ApiResponse(code = 500, message = "Internal server error")
+    })
     public ResponseEntity<?> updateAccount(@CurrentUser UserPrincipal userPrincipal, @RequestBody UserRequest userRequest) {
         if (userService.findById(userPrincipal.getId()).isPresent()) {
 
@@ -55,6 +70,8 @@ public class UserController {
             Optional<Sex>           sex = Optional.ofNullable(userRequest.getSex());
             Optional<String>        aboutMyself = Optional.ofNullable(userRequest.getAboutMyself());
             Optional<String>        timeZone = Optional.ofNullable(userRequest.getTimeZone());
+            Optional<String>        password = Optional.ofNullable(userRequest.getPassword());
+
 
             Optional<LocalTime>     workTimeBegin = Optional.empty();
             if (userRequest.getWorkTimeBegin() != null) {
@@ -97,7 +114,7 @@ public class UserController {
             workTimeEnd.ifPresent(currentUser::setWorkTimeEnd);
             sleepTimeBegin.ifPresent(currentUser::setSleepTimeBegin);
             sleepTimeEnd.ifPresent(currentUser::setSleepTimeEnd);
-
+            password.ifPresent(pass -> currentUser.setPassword(passwordEncoder.encode(pass)));
             User resultUser = userService.save(currentUser);
 
             return ResponseEntity.ok(new UserResponse(resultUser));
@@ -112,7 +129,7 @@ public class UserController {
      * @return User Entity
      */
     @GetMapping("/api/user/account")
-    public ResponseEntity<?> updateAccount(@CurrentUser UserPrincipal userPrincipal) {
+    public ResponseEntity<?> getAccount(@CurrentUser UserPrincipal userPrincipal) {
         if (userService.findById(userPrincipal.getId()).isPresent()) {
             return ResponseEntity.ok(new UserResponse(userService.findById(userPrincipal.getId()).get()));
         } else {
@@ -127,6 +144,13 @@ public class UserController {
      * @return User - Entity
      */
     @PostMapping("/api/user/create-password")
+    @ApiOperation(value = "Create user password",
+            notes = "Returns updated User entity")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Successful"),
+            @ApiResponse(code = 400, message = "Error with access"),
+            @ApiResponse(code = 500, message = "Internal server error")
+    })
     public ResponseEntity<?> createPassword(@CurrentUser UserPrincipal userPrincipal) {
         if (userService.findById(userPrincipal.getId()).isPresent()) {
             User user = userService.findByLogin(userPrincipal.getLogin()).get();
@@ -140,6 +164,65 @@ public class UserController {
         }
     }
 
+    /**
+     * Create user - Operator - Manager (only for admin)
+     *
+     * @param userPrincipal - authorized user
+     * @return User - Entity
+     */
+    @PostMapping("/api/admin/user")
+    @ApiOperation(value = "Create User (only manager and operator)",
+            notes = "Returns created User entity")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Successful"),
+            @ApiResponse(code = 400, message = "Error with access"),
+            @ApiResponse(code = 500, message = "Internal server error")
+    })
+    public ResponseEntity<?> createManagerOrOperator(@CurrentUser UserPrincipal userPrincipal, @RequestBody UserRoleDto userDto){
+        if (userService.findById(userPrincipal.getId()).isPresent()) {
+            if (roleExists(userDto.getRoles(), Role.MANAGER) || roleExists(userDto.getRoles(), Role.OPERATOR)){
+                return createUser(userDto);
+            }
+            throw new BadRequestException(INVALID_ROLE);
+        } else {
+            throw new BadRequestException(NO_ACCESS);
+        }
+    }
+
+    @GetMapping("/api/admin/user/byRole")
+    @ApiOperation(value = "Get users by role with paging",
+            notes = "Returns list of users by given paging. Only for OPERATOR and MANAGER")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Successful"),
+            @ApiResponse(code = 400, message = "Error with access"),
+            @ApiResponse(code = 500, message = "Internal server error")
+    })
+    public ResponseEntity<?> getUsersByRole(@CurrentUser UserPrincipal userPrincipal,
+                                            @RequestParam RoleDto role,
+                                            @RequestParam int page,
+                                            @RequestParam int pageSize){
+        if (userService.findById(userPrincipal.getId()).isPresent()) {
+            return ResponseEntity.ok(userService.findAllByRolesContaining(role,page,pageSize));
+        } else {
+            throw new BadRequestException(NO_ACCESS);
+        }
+    }
+
+    private ResponseEntity<?> createUser(UserRoleDto userDto){
+        if (userService.findByLogin(userDto.getLogin()).isPresent()){
+            throw new BadRequestException(LOGIN_ALREADY_IN_USE);
+        }
+        User user = new User();
+        user.setLogin(userDto.getLogin());
+        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        user = userService.save(user);
+        for (UserRole role : userDto.getRoles()) {
+            UserRole userRole = new UserRole(user,role.getRole());
+            userRoleService.save(userRole);
+        }
+        return new ResponseEntity<>(new UserResponseDto(user), HttpStatus.OK);
+    }
+
     private static String getWeekendsStr(List<Boolean> list) {
         StringBuilder result = new StringBuilder();
         for (int i = 0; i < list.size(); i++) {
@@ -151,4 +234,14 @@ public class UserController {
         }
         return result.toString();
     }
+
+    private boolean roleExists(Set<UserRole> roles,Role role){
+        for (UserRole userRole : roles) {
+            if (userRole.getRole().equals(role)){
+                return true;
+            }
+        }
+        return false;
+    }
+
 }
