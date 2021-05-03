@@ -13,7 +13,9 @@ import com.era.tofate.service.user.UserService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,6 +31,8 @@ import static com.era.tofate.exceptions.ExceptionConstants.NO_ACCESS;
 public class UserController {
     private final UserService userService;
     private final SocialStatusService socialStatusService;
+    private final PasswordEncoder passwordEncoder;
+
 
     /**
      * Updating user information
@@ -111,6 +115,26 @@ public class UserController {
     public ResponseEntity<?> updateAccount(@CurrentUser UserPrincipal userPrincipal) {
         if (userService.findById(userPrincipal.getId()).isPresent()) {
             return ResponseEntity.ok(new UserResponse(userService.findById(userPrincipal.getId()).get()));
+        } else {
+            throw new BadRequestException(NO_ACCESS);
+        }
+    }
+
+    /**
+     * Update user password (for test only)
+     *
+     * @param userPrincipal - authorized user
+     * @return User - Entity
+     */
+    @PostMapping("/api/user/create-password")
+    public ResponseEntity<?> createPassword(@CurrentUser UserPrincipal userPrincipal) {
+        if (userService.findById(userPrincipal.getId()).isPresent()) {
+            User user = userService.findByLogin(userPrincipal.getLogin()).get();
+            user.setLogin(userPrincipal.getLogin());
+            user.setId(userPrincipal.getId());
+            user.setPassword(passwordEncoder.encode(userPrincipal.getPassword()));
+            User resultUser = userService.save(user);
+            return new ResponseEntity<>(resultUser, HttpStatus.OK);
         } else {
             throw new BadRequestException(NO_ACCESS);
         }

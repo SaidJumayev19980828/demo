@@ -3,6 +3,7 @@ package com.era.tofate.security;
 import com.era.tofate.entities.user.User;
 import com.era.tofate.entities.userrole.UserRole;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -15,6 +16,7 @@ import java.util.Map;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class UserPrincipal implements UserDetails {
     private Long id;
     private String login;

@@ -20,7 +20,6 @@ import javax.persistence.*;
 public class Photo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonIgnore
     private Long id;
     private String url;
     private String type;
@@ -28,4 +27,5 @@ public class Photo {
     @JoinColumn(name = "publication_id")
     @JsonIgnore
     private Publication publication;
+    private boolean deleted;
 }

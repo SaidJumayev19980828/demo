@@ -10,4 +10,7 @@ public class ExceptionConstants {
     public static final String PHOTO_NOT_FOUND = "Image not found";
     public static final String VIRT_NOT_FOUND = "Virt not found";
     public static final String GENDER_IS_NOT_VALID = "gender is not valid";
+    public static final String LOGIN_ALREADY_IN_USE = "login already in use";
+    public static final String PUBLICATION_NOT_FOUND = "publication not found";
+
 }

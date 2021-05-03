@@ -1,11 +1,20 @@
 package com.era.tofate.service.user;
 
 import com.era.tofate.entities.user.User;
+import com.era.tofate.enums.Role;
+import com.era.tofate.payload.auth.UserToken;
 import com.era.tofate.repository.user.UserRepository;
+import com.era.tofate.security.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.security.auth.message.AuthException;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,10 +22,28 @@ import java.util.Optional;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class UserServiceImpl implements UserService {
     private final UserRepository repository;
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private TokenProvider tokenProviderService;
 
     @Override
     public Optional<User> findByLogin(String login) {
         return repository.findByLogin(login);
+    }
+    @Override
+    public UserToken auth(String login, String password) {
+        try {
+            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                    login, password));
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            String token = tokenProviderService.createToken(authentication);
+            UserToken userToken = new UserToken(token, "Bearer");
+            return userToken;
+        } catch (Exception ex) {
+            throw ex;
+        }
     }
 
     @Override
