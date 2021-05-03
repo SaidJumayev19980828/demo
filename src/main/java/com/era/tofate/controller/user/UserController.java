@@ -15,13 +15,10 @@ import com.era.tofate.security.CurrentUser;
 import com.era.tofate.security.UserPrincipal;
 import com.era.tofate.service.socialstatus.SocialStatusService;
 import com.era.tofate.service.user.UserService;
-
-import java.util.Arrays;
-import java.util.List;
-
 import com.era.tofate.service.userrole.UserRoleService;
-import com.google.common.collect.Sets;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,6 +27,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -52,6 +50,13 @@ public class UserController {
      * @return User Entity
      */
     @PostMapping("/api/user/account")
+    @ApiOperation(value = "Update user account",
+            notes = "Returns updated User entity")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Successful"),
+            @ApiResponse(code = 400, message = "Error with access"),
+            @ApiResponse(code = 500, message = "Internal server error")
+    })
     public ResponseEntity<?> updateAccount(@CurrentUser UserPrincipal userPrincipal, @RequestBody UserRequest userRequest) {
         if (userService.findById(userPrincipal.getId()).isPresent()) {
 
@@ -139,6 +144,13 @@ public class UserController {
      * @return User - Entity
      */
     @PostMapping("/api/user/create-password")
+    @ApiOperation(value = "Create user password",
+            notes = "Returns updated User entity")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Successful"),
+            @ApiResponse(code = 400, message = "Error with access"),
+            @ApiResponse(code = 500, message = "Internal server error")
+    })
     public ResponseEntity<?> createPassword(@CurrentUser UserPrincipal userPrincipal) {
         if (userService.findById(userPrincipal.getId()).isPresent()) {
             User user = userService.findByLogin(userPrincipal.getLogin()).get();
@@ -159,6 +171,13 @@ public class UserController {
      * @return User - Entity
      */
     @PostMapping("/api/admin/user")
+    @ApiOperation(value = "Create User (only manager and operator)",
+            notes = "Returns created User entity")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Successful"),
+            @ApiResponse(code = 400, message = "Error with access"),
+            @ApiResponse(code = 500, message = "Internal server error")
+    })
     public ResponseEntity<?> createManagerOrOperator(@CurrentUser UserPrincipal userPrincipal, @RequestBody UserRoleDto userDto){
         if (userService.findById(userPrincipal.getId()).isPresent()) {
             if (roleExists(userDto.getRoles(), Role.MANAGER) || roleExists(userDto.getRoles(), Role.OPERATOR)){
@@ -173,6 +192,11 @@ public class UserController {
     @GetMapping("/api/admin/user/byRole")
     @ApiOperation(value = "Get users by role with paging",
             notes = "Returns list of users by given paging. Only for OPERATOR and MANAGER")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Successful"),
+            @ApiResponse(code = 400, message = "Error with access"),
+            @ApiResponse(code = 500, message = "Internal server error")
+    })
     public ResponseEntity<?> getUsersByRole(@CurrentUser UserPrincipal userPrincipal,
                                             @RequestParam RoleDto role,
                                             @RequestParam int page,

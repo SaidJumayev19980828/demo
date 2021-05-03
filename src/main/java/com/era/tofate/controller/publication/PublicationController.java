@@ -9,6 +9,7 @@ import com.era.tofate.payload.file.FilePath;
 import com.era.tofate.payload.photo.PhotoId;
 import com.era.tofate.payload.publication.PublicationDto;
 import com.era.tofate.payload.publication.PublicationPhoto;
+import com.era.tofate.payload.publication.PublicationResDto;
 import com.era.tofate.payload.virt.VirtId;
 import com.era.tofate.security.CurrentUser;
 import com.era.tofate.security.UserPrincipal;
@@ -18,6 +19,8 @@ import com.era.tofate.service.publication.PublicationService;
 import com.era.tofate.service.user.UserService;
 import com.era.tofate.service.virt.VirtService;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -48,6 +51,11 @@ public class PublicationController {
      */
     @ApiOperation(value = "Create Publication",
             notes = "Create Publication of virt with id of uploaded photo")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Successful"),
+            @ApiResponse(code = 400, message = "Error with access"),
+            @ApiResponse(code = 500, message = "Internal server error")
+    })
     @PostMapping("/api/admin/virt/publication")
     public ResponseEntity<?> createPublication(@CurrentUser UserPrincipal userPrincipal, @RequestBody PublicationDto publicationDto){
         if (userService.findById(userPrincipal.getId()).isPresent()) {
@@ -77,6 +85,11 @@ public class PublicationController {
      */
     @ApiOperation(value = "Add photos to Publication",
             notes = "also returns existing publication entity with old and newly added photos")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Successful"),
+            @ApiResponse(code = 400, message = "Error with message (access problem or publication not found)"),
+            @ApiResponse(code = 500, message = "Internal server error")
+    })
     @PostMapping("/api/admin/virt/publication/photo")
     public ResponseEntity<?> addPhoto(@CurrentUser UserPrincipal userPrincipal, @RequestBody PublicationPhoto publication
     ){
@@ -109,6 +122,11 @@ public class PublicationController {
      */
     @ApiOperation(value = "Delete photos from Publication",
             notes = "also returns existing publication entity with remaining photos")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Successful"),
+            @ApiResponse(code = 400, message = "Error with message (access problem or publication not found)"),
+            @ApiResponse(code = 500, message = "Internal server error")
+    })
     @DeleteMapping("/api/admin/virt/publication/photo")
     public ResponseEntity<?> deletePhoto(@CurrentUser UserPrincipal userPrincipal, @RequestBody PublicationPhoto publication
     ){
@@ -143,11 +161,15 @@ public class PublicationController {
     @GetMapping("/api/virt/publication")
     @ApiOperation(value = "Get publications by page",
             notes = "Returns list of Publications by given paging")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Successful"),
+            @ApiResponse(code = 400, message = "Error with access"),
+            @ApiResponse(code = 500, message = "Internal server error")
+    })
     public ResponseEntity<?> publications(@CurrentUser UserPrincipal userPrincipal,
                                                @RequestParam int page,
                                                @RequestParam int pageSize){
         if (userService.findById(userPrincipal.getId()).isPresent()) {
-
             return ResponseEntity.ok(pubResponses(service.findAll(page,pageSize)));
         }else {
             throw new BadRequestException(NO_ACCESS);
@@ -164,6 +186,11 @@ public class PublicationController {
     @PostMapping("/api/admin/virt/file-upload")
     @ApiOperation(value = "Upload new photo",
             notes = "Returns saved photo entity with id")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Successful"),
+            @ApiResponse(code = 400, message = "Error with access"),
+            @ApiResponse(code = 500, message = "Internal server error")
+    })
     public ResponseEntity<?> uploadFile(@CurrentUser UserPrincipal userPrincipal,
                                          @RequestPart MultipartFile file,
                                          @RequestPart String type
@@ -206,8 +233,10 @@ public class PublicationController {
             virt.setPublications(new ArrayList<>());
             publication.setVirt(virt);
         });
-        List<Publication> publicationRes = new ArrayList<>();
-        publications.forEach(publicationRes::add);
+        List<PublicationResDto> publicationRes = new ArrayList<>();
+        publications.forEach(publication -> {
+            publicationRes.add(new PublicationResDto(publication));
+        });
         Map<String, Object> response = new HashMap<>();
         response.put("publications", publicationRes);
         return response;
@@ -241,6 +270,7 @@ public class PublicationController {
         publication.setTextPub(dto.getTextPub());
         return publication;
     }
+
     private Set<Photo> fromPhotoId(Set<PhotoId> photoIds){
         Set<Photo> photos = new HashSet<>();
         photoIds.forEach(photoId -> {

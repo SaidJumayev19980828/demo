@@ -11,6 +11,8 @@ import com.era.tofate.security.UserPrincipal;
 import com.era.tofate.service.user.UserService;
 import com.era.tofate.service.virt.VirtService;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -39,6 +41,11 @@ public class VirtController {
     @GetMapping("/api/virt/all")
     @ApiOperation(value = "Get virts with paging",
             notes = "Returns list of virts by given paging. By gender if given")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Successful"),
+            @ApiResponse(code = 400, message = "Error with access"),
+            @ApiResponse(code = 500, message = "Internal server error")
+    })
     public ResponseEntity<?> gender(@CurrentUser UserPrincipal userPrincipal,
                                     @RequestParam(required = false) Sex sex,
                                     @RequestParam int page,
@@ -66,11 +73,15 @@ public class VirtController {
     @GetMapping("/api/virt")
     @ApiOperation(value = "Get virt by id",
             notes = "Returns virt by given id")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Successful"),
+            @ApiResponse(code = 400, message = "Error with access"),
+            @ApiResponse(code = 500, message = "Internal server error")
+    })
     public ResponseEntity<?> byId(@CurrentUser UserPrincipal userPrincipal, @RequestParam Long virtId){
         if (userService.findById(userPrincipal.getId()).isPresent()) {
             Virt virt = virtService.findById(virtId).get();
             virt.getPublications().forEach(publication -> publication.setVirt(null));
-
             return ResponseEntity.ok(virt);
         } else {
             throw new BadRequestException(NO_ACCESS);
@@ -87,6 +98,11 @@ public class VirtController {
     @PostMapping("/api/admin/virt/new")
     @ApiOperation(value = "Create or Update virt ",
             notes = "Returns created or updated virt")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Successful"),
+            @ApiResponse(code = 400, message = "Error with access"),
+            @ApiResponse(code = 500, message = "Internal server error")
+    })
     public ResponseEntity<?> createVirt(@CurrentUser UserPrincipal userPrincipal, @RequestBody VirtRequest virtRequest){
         if (userService.findById(userPrincipal.getId()).isPresent()) {
             Virt existingVirt;
