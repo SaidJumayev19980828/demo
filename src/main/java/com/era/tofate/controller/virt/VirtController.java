@@ -6,6 +6,7 @@ import com.era.tofate.enums.Sex;
 import com.era.tofate.exceptions.BadRequestException;
 import com.era.tofate.payload.virt.VirtRequest;
 import com.era.tofate.payload.virt.VirtResponse;
+import com.era.tofate.payload.virt.VirtResponseDetailed;
 import com.era.tofate.security.CurrentUser;
 import com.era.tofate.security.UserPrincipal;
 import com.era.tofate.service.user.UserService;
@@ -61,12 +62,21 @@ public class VirtController {
      * @return Virt - Virt Entity
      */
     @GetMapping("/api/virt")
-    public ResponseEntity<?> byId(@CurrentUser UserPrincipal userPrincipal, @RequestParam Long virtId){
+    public ResponseEntity<?> createVirt(@CurrentUser UserPrincipal userPrincipal, @RequestBody VirtRequest virtRequest){
         if (userService.findById(userPrincipal.getId()).isPresent()) {
-            Virt virt = virtService.findById(virtId).get();
-            virt.getPublications().forEach(publication -> publication.setVirt(null));
-
-            return ResponseEntity.ok(virt);
+            Virt existingVirt;
+            if (virtRequest.getId() != null){
+                if (userService.findById(virtRequest.getId()).isPresent()) {
+                    existingVirt = virtService.findById(virtRequest.getId()).get();
+                    existingVirt = virtRequestToVirt(virtRequest, existingVirt);
+                    existingVirt.setId(userPrincipal.getId());
+                    existingVirt = virtService.save(existingVirt);
+                    return ResponseEntity.ok(existingVirt);
+                }
+            }
+            existingVirt = virtService.save(virtRequestToVirt(virtRequest, new Virt()));
+            existingVirt.getPublications().forEach(publication -> publication.setVirt(null));
+            return ResponseEntity.ok(existingVirt);
         } else {
             throw new BadRequestException(NO_ACCESS);
         }
