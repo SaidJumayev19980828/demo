@@ -189,7 +189,7 @@ public class UserController {
         }
     }
 
-    @GetMapping("/api/admin/user/byRole")
+    @GetMapping("/api/admin/user/by-role")
     @ApiOperation(value = "Get users by role with paging",
             notes = "Returns list of users by given paging. Only for OPERATOR and MANAGER")
     @ApiResponses({

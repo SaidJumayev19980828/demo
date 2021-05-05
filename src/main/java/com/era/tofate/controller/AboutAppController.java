@@ -1,4 +1,4 @@
-package com.era.tofate.controller.aboutapp;
+package com.era.tofate.controller;
 
 import com.era.tofate.entities.aboutapp.AboutApp;
 import com.era.tofate.exceptions.BadRequestException;
