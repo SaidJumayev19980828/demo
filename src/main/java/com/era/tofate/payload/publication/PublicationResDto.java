@@ -4,14 +4,12 @@ import com.era.tofate.entities.photo.Photo;
 import com.era.tofate.entities.publication.Publication;
 import com.era.tofate.entities.virt.Virt;
 import com.era.tofate.enums.FileMediaType;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 import java.util.Set;

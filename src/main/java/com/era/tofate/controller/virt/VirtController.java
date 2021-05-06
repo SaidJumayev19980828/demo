@@ -5,7 +5,7 @@ import com.era.tofate.entities.virt.Virt;
 import com.era.tofate.enums.Sex;
 import com.era.tofate.exceptions.BadRequestException;
 import com.era.tofate.payload.virt.VirtRequest;
-import com.era.tofate.payload.virt.VirtRequestCreate;
+import com.era.tofate.payload.virt.VirtResDto;
 import com.era.tofate.payload.virt.VirtResponse;
 import com.era.tofate.security.CurrentUser;
 import com.era.tofate.security.UserPrincipal;
@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.*;
 
 import static com.era.tofate.exceptions.ExceptionConstants.NO_ACCESS;
-import static com.era.tofate.exceptions.ExceptionConstants.VIRT_NOT_FOUND;
 
 @RestController
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -83,8 +82,9 @@ public class VirtController {
     public ResponseEntity<?> byId(@CurrentUser UserPrincipal userPrincipal, @RequestParam Long virtId){
         if (userService.findById(userPrincipal.getId()).isPresent()) {
             Virt virt = virtService.findById(virtId).get();
-            //virt.getPublications().forEach(publication -> publication.setVirt(null));
-            return ResponseEntity.ok(virt);
+            virt.getPublications().forEach(publication -> publication.setVirt(null));
+            virt.getPublications().forEach(publication -> {});
+            return ResponseEntity.ok(new VirtResDto(virt));
         } else {
             throw new BadRequestException(NO_ACCESS);
         }
