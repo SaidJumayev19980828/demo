@@ -136,7 +136,7 @@ public class FAQController {
                         return faqRepository.save(faq);
                     }));
         } else {
-            throw new BadRequestException(NO_ACCESS);
+             throw new BadRequestException(NO_ACCESS);
         }
     }
 
