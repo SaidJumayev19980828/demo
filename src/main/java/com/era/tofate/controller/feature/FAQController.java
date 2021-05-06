@@ -27,15 +27,12 @@ public class FAQController {
     private final UserRoleRepository userRoleRepository;
     private final FAQRepository faqRepository;
 
-
     /**
      * Creating new FAQ
-     *
      * @param userPrincipal - authorized administrator
      * @param faq - FAQ entity
      * @return FAQ entity"
      */
-
     @PostMapping("/api/admin/createfaq")
     @ApiOperation(value = "Creates FAQ",
             notes = "Returns created FAQ entity")
@@ -49,11 +46,10 @@ public class FAQController {
 
         if (data.get(0).getRole().equals(Role.ADMIN)) {
             return ResponseEntity.ok().body(faqRepository.save(faq));
-        } else{
+        } else {
             throw new BadRequestException(NO_ACCESS);
         }
     }
-
 
     /**
      *  Get selected FAQ by id
@@ -79,18 +75,17 @@ public class FAQController {
             return ResponseEntity.ok().body(faqRepository.findById(id)
                     .orElseThrow(() -> new ResourceNotFoundException("id not found")));
         }
-        else{
+        else {
             throw new BadRequestException(NO_ACCESS);
         }
     }
 
     /**
-     *   Shows all existed FAQs
+     *  Shows all existed FAQs
      *
      * @param userPrincipal - authorized user
      * @return FAQ Entity
      */
-
     @GetMapping("/api/faq")
     @ApiOperation(value = "Get all  existed FAQs",
             notes = "Shows list of  FAQs from database")
@@ -105,13 +100,13 @@ public class FAQController {
         if(data.get(0).getRole().equals(Role.ADMIN) || data.get(0).getRole().equals(Role.USER)){
             return ResponseEntity.ok().body(faqRepository.findAll());
         }
-        else{
+        else {
             throw new BadRequestException(NO_ACCESS);
         }
     }
 
     /**
-     *      Update existing FAQ by id
+     *  Update existing FAQ by id
      *
      * @param userPrincipal - authorized administrator
      * @param faq - FAQ entity
@@ -140,10 +135,11 @@ public class FAQController {
                         faq.setId(id);
                         return faqRepository.save(faq);
                     }));
-        } else{
+        } else {
             throw new BadRequestException(NO_ACCESS);
         }
     }
+
     /**
      *  Delete selected FAQ by id
      *
