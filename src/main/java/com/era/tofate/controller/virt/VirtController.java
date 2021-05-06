@@ -7,6 +7,7 @@ import com.era.tofate.exceptions.BadRequestException;
 import com.era.tofate.payload.virt.VirtRequest;
 import com.era.tofate.payload.virt.VirtResDto;
 import com.era.tofate.payload.virt.VirtResponse;
+import com.era.tofate.payload.virt.VirtResponseDetailed;
 import com.era.tofate.security.CurrentUser;
 import com.era.tofate.security.UserPrincipal;
 import com.era.tofate.service.user.UserService;
@@ -64,7 +65,7 @@ public class VirtController {
         }
     }
 
-    /**
+     /**
      * getting information about Virt by id
      *
      * @param userPrincipal - authorized user

@@ -32,6 +32,7 @@ public class Publication {
     @ApiModelProperty(notes="id of publication entity")
     private Long id;
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "avatar_id")
     @ApiModelProperty(notes="entity of Virt")
     private Virt virt;
