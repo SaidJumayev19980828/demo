@@ -67,9 +67,7 @@ public class FAQController {
             @ApiResponse(code = 500, message = "Internal server error")
     })
     public ResponseEntity<?> Getone(@PathVariable Long id, @CurrentUser UserPrincipal userPrincipal) {
-
         List<UserRole>  data = userRoleRepository.findAllByUser_Login(userPrincipal.getLogin());
-        System.out.println("test"+data);
 
         if(data.get(0).getRole().equals(Role.ADMIN) || data.get(0).getRole().equals(Role.USER)){
             return ResponseEntity.ok().body(faqRepository.findById(id)
@@ -99,8 +97,7 @@ public class FAQController {
 
         if(data.get(0).getRole().equals(Role.ADMIN) || data.get(0).getRole().equals(Role.USER)){
             return ResponseEntity.ok().body(faqRepository.findAll());
-        }
-        else {
+        } else {
             throw new BadRequestException(NO_ACCESS);
         }
     }
@@ -110,18 +107,18 @@ public class FAQController {
      *
      * @param userPrincipal - authorized administrator
      * @param faq - FAQ entity
-     * @param id - FAQ id
-     * @return FAQ entity"
+     * @param id -  id of FAQ
+     * @return FAQ entity by id"
      */
     @PutMapping("/api/faq/editfaq/{id}")
     @ApiOperation(value = "Update selected FAQ by id",
-            notes = "Returns updated FAQ entity")
+            notes = "Returns FAQ by given id")
     @ApiResponses({
             @ApiResponse(code = 200, message = "Successful"),
             @ApiResponse(code = 400, message = "Error with access"),
             @ApiResponse(code = 500, message = "Internal server error")
     })
-    public ResponseEntity<?> editFAQ(@CurrentUser UserPrincipal userPrincipal,@RequestBody FAQ faq, @PathVariable Long id) {
+    public ResponseEntity<?> editFAQ(@CurrentUser UserPrincipal userPrincipal, @RequestBody FAQ faq, @PathVariable Long id) {
         List<UserRole>      data = userRoleRepository.findAllByUser_Login(userPrincipal.getLogin());
 
         if (data.get(0).getRole().equals(Role.ADMIN)) {
@@ -155,7 +152,7 @@ public class FAQController {
             @ApiResponse(code = 400, message = "Error with access"),
             @ApiResponse(code = 500, message = "Internal server error")
     })
-    void deleteFAQ(@PathVariable Long id,@CurrentUser UserPrincipal userPrincipal) {
+    void deleteFAQ(@PathVariable Long id, @CurrentUser UserPrincipal userPrincipal) {
         List<UserRole> data = userRoleRepository.findAllByUser_Login(userPrincipal.getLogin());
         if (data.get(0).getRole().equals(Role.ADMIN)) {
             faqRepository.deleteById(id);
