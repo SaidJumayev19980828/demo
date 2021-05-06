@@ -5,6 +5,7 @@ import com.era.tofate.entities.virt.Virt;
 import com.era.tofate.enums.Sex;
 import com.era.tofate.exceptions.BadRequestException;
 import com.era.tofate.payload.virt.VirtRequest;
+import com.era.tofate.payload.virt.VirtResDto;
 import com.era.tofate.payload.virt.VirtResponse;
 import com.era.tofate.payload.virt.VirtResponseDetailed;
 import com.era.tofate.security.CurrentUser;
@@ -83,20 +84,21 @@ public class VirtController {
         if (userService.findById(userPrincipal.getId()).isPresent()) {
             Virt virt = virtService.findById(virtId).get();
             virt.getPublications().forEach(publication -> publication.setVirt(null));
-            return ResponseEntity.ok(virt);
+            virt.getPublications().forEach(publication -> {});
+            return ResponseEntity.ok(new VirtResDto(virt));
         } else {
             throw new BadRequestException(NO_ACCESS);
         }
     }
 
     /**
-     * Create new Virt
+     * Create or Update Virt
      *
      * @param userPrincipal - authorized user
      * @param virtRequest - Virt Entity
      * @return VirtResponse Entity
      */
-    @PostMapping("/api/admin/virt/new")
+    @PostMapping("/api/admin/virt")
     @ApiOperation(value = "Create or Update virt ",
             notes = "Returns created or updated virt")
     @ApiResponses({
@@ -104,20 +106,19 @@ public class VirtController {
             @ApiResponse(code = 400, message = "Error with access"),
             @ApiResponse(code = 500, message = "Internal server error")
     })
-    public ResponseEntity<?> createVirt(@CurrentUser UserPrincipal userPrincipal, @RequestBody VirtRequest virtRequest){
+    public ResponseEntity<?> createOrUpdateVirt(@CurrentUser UserPrincipal userPrincipal, @RequestBody VirtRequest virtRequest){
         if (userService.findById(userPrincipal.getId()).isPresent()) {
             Virt existingVirt;
             if (virtRequest.getId() != null){
-                if (userService.findById(virtRequest.getId()).isPresent()) {
-                    existingVirt = virtService.findById(virtRequest.getId()).get();
+                Optional<Virt> optionalVirt = virtService.findById(virtRequest.getId());
+                if (optionalVirt.isPresent()) {
+                    existingVirt = optionalVirt.get();
                     existingVirt = virtRequestToVirt(virtRequest, existingVirt);
-                    existingVirt.setId(userPrincipal.getId());
                     existingVirt = virtService.save(existingVirt);
                     return ResponseEntity.ok(existingVirt);
                 }
             }
             existingVirt = virtService.save(virtRequestToVirt(virtRequest, new Virt()));
-            existingVirt.getPublications().forEach(publication -> publication.setVirt(null));
             return ResponseEntity.ok(existingVirt);
         } else {
             throw new BadRequestException(NO_ACCESS);
@@ -141,7 +142,7 @@ public class VirtController {
         Optional<Integer>       subscribersQuantity = Optional.ofNullable(virtRequest.getSubscribersQuantity());
         Optional<Integer>       subscriptionQuantity = Optional.ofNullable(virtRequest.getSubscriptionQuantity());
 
-        Optional<List<Publication>>        publications = Optional.ofNullable(virtRequest.getPublications());
+        List<Publication>        publications = virt.getPublications();
         name.ifPresent(virt::setName);
         about.ifPresent(virt::setAbout);
         avatar.ifPresent(virt::setAvatar);
@@ -151,7 +152,7 @@ public class VirtController {
         publicPostQuantity.ifPresent(virt::setPublicPostQuantity);
         subscribersQuantity.ifPresent(virt::setSubscribersQuantity);
         subscriptionQuantity.ifPresent(virt::setSubscriptionQuantity);
-        publications.ifPresent(virt::setPublications);
+        virt.setPublications(publications);
         return virt;
     }
 }

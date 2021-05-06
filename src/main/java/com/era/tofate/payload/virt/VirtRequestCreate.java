@@ -1,15 +1,12 @@
 package com.era.tofate.payload.virt;
 
-import com.era.tofate.entities.publication.Publication;
 import com.era.tofate.enums.Sex;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.List;
 @Getter
 @Setter
-public class VirtRequest {
+public class VirtRequestCreate {
     @ApiModelProperty(notes="id of virt")
     private Long id;
     @ApiModelProperty(notes="name of virt")

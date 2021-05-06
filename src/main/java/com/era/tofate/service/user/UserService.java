@@ -13,6 +13,6 @@ import java.util.Optional;
 public interface UserService extends GeneralService<User> {
     Optional<User> findByLogin(String login);
     UserToken auth(String login, String password);
-    public List<Map<String,Object>> findAllByRolesContaining(RoleDto role, int page, int pageSize);
+    List<Map<String,Object>> findAllByRolesContaining(RoleDto role, int page, int pageSize);
 
 }

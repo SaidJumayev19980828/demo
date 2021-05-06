@@ -1,7 +1,6 @@
 package com.era.tofate.service.user;
 
 import com.era.tofate.entities.user.User;
-import com.era.tofate.enums.Role;
 import com.era.tofate.enums.RoleDto;
 import com.era.tofate.payload.auth.UserToken;
 import com.era.tofate.repository.user.UserRepository;

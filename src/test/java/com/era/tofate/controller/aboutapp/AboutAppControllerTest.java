@@ -1,6 +1,7 @@
 //package com.era.tofate.controller.aboutapp;
 //
 //import com.era.tofate.ToFateApplication;
+//import com.era.tofate.controller.AboutAppController;
 //import com.era.tofate.entities.aboutapp.AboutApp;
 //import com.era.tofate.service.aboutapp.AboutAppService;
 //import org.junit.jupiter.api.Test;
