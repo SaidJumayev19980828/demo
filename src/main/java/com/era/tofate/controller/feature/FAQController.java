@@ -9,6 +9,8 @@ import com.era.tofate.repository.faq.FAQRepository;
 import com.era.tofate.repository.userrole.UserRoleRepository;
 import com.era.tofate.security.CurrentUser;
 import com.era.tofate.security.UserPrincipal;
+import com.era.tofate.service.user.UserService;
+import com.era.tofate.service.userrole.UserRoleService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -26,6 +28,8 @@ import static com.era.tofate.exceptions.ExceptionConstants.NO_ACCESS;
 public class FAQController {
     private final UserRoleRepository userRoleRepository;
     private final FAQRepository faqRepository;
+    private final UserRoleService userRoleService;
+    private final UserService userService;
 
     /**
      * Creating new FAQ
@@ -41,20 +45,26 @@ public class FAQController {
             @ApiResponse(code = 400, message = "Error with access"),
             @ApiResponse(code = 500, message = "Internal server error")
     })
-    public ResponseEntity<?> createFAQ(@CurrentUser UserPrincipal userPrincipal, @RequestBody FAQ faq) {
-        List<UserRole> data = userRoleRepository.findAllByUser_Login(userPrincipal.getLogin());
 
-        if (data.get(0).getRole().equals(Role.ADMIN)) {
-            return ResponseEntity.ok().body(faqRepository.save(faq));
-        } else {
+    public ResponseEntity<?> createFAQ(@CurrentUser UserPrincipal userPrincipal, @RequestBody FAQ faq) {
+        if(userPrincipal==null)
+        {
             throw new BadRequestException(NO_ACCESS);
+        } else {
+            List<UserRole>   data = userRoleRepository.findAllByUser_Login(userPrincipal.getLogin());
+
+            if (data.get(0).getRole().equals(Role.ADMIN)|| data.get(0).getRole().equals(Role.MANAGER)) {
+                return ResponseEntity.ok().body(faqRepository.save(faq));
+
+            } else {
+                throw new BadRequestException(NO_ACCESS);
+            }
         }
     }
 
     /**
      *  Get selected FAQ by id
      *
-     * @param userPrincipal - authorized user
      * @param id - FAQ id
      * @return FAQ Entity
      */
@@ -66,22 +76,15 @@ public class FAQController {
             @ApiResponse(code = 400, message = "Error with access"),
             @ApiResponse(code = 500, message = "Internal server error")
     })
-    public ResponseEntity<?> Getone(@PathVariable Long id, @CurrentUser UserPrincipal userPrincipal) {
-        List<UserRole>  data = userRoleRepository.findAllByUser_Login(userPrincipal.getLogin());
+    public ResponseEntity<?> Getone(@PathVariable Long id) {
 
-        if(data.get(0).getRole().equals(Role.ADMIN) || data.get(0).getRole().equals(Role.USER)){
-            return ResponseEntity.ok().body(faqRepository.findById(id)
-                    .orElseThrow(() -> new ResourceNotFoundException("id not found")));
-        }
-        else {
-            throw new BadRequestException(NO_ACCESS);
-        }
+        return ResponseEntity.ok().body(faqRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("id not found")));
     }
 
     /**
      *  Shows all existed FAQs
      *
-     * @param userPrincipal - authorized user
      * @return FAQ Entity
      */
     @GetMapping("/api/faq")
@@ -92,18 +95,12 @@ public class FAQController {
             @ApiResponse(code = 400, message = "Error with access"),
             @ApiResponse(code = 500, message = "Internal server error")
     })
-    public ResponseEntity<?> GetAll(@CurrentUser UserPrincipal userPrincipal) {
-        List<UserRole>     data = userRoleRepository.findAllByUser_Login(userPrincipal.getLogin());
-
-        if(data.get(0).getRole().equals(Role.ADMIN) || data.get(0).getRole().equals(Role.USER)){
-            return ResponseEntity.ok().body(faqRepository.findAll());
-        } else {
-            throw new BadRequestException(NO_ACCESS);
-        }
+    public ResponseEntity<?> GetAll() {
+        return ResponseEntity.ok().body(faqRepository.findAll());
     }
 
     /**
-     *    Update existing FAQ by id
+     *  Update existing FAQ by id
      *
      * @param userPrincipal - authorized administrator
      * @param faq - FAQ entity
@@ -119,21 +116,26 @@ public class FAQController {
             @ApiResponse(code = 500, message = "Internal server error")
     })
     public ResponseEntity<?> editFAQ(@CurrentUser UserPrincipal userPrincipal, @RequestBody FAQ faq, @PathVariable Long id) {
-        List<UserRole>      data = userRoleRepository.findAllByUser_Login(userPrincipal.getLogin());
-
-        if (data.get(0).getRole().equals(Role.ADMIN)) {
-            return ResponseEntity.ok().body(faqRepository.findById(id)
-                    .map(faq1 -> {
-                        faq1.setAnswer(faq.getAnswer());
-                        faq1.setQuestion(faq.getQuestion());
-                        return faqRepository.save(faq1);
-                    })
-                    .orElseGet(() -> {
-                        faq.setId(id);
-                        return faqRepository.save(faq);
-                    }));
+        if(userPrincipal==null)
+        {
+            throw new BadRequestException(NO_ACCESS);
         } else {
-             throw new BadRequestException(NO_ACCESS);
+            List<UserRole>   data = userRoleRepository.findAllByUser_Login(userPrincipal.getLogin());
+
+            if (data.get(0).getRole().equals(Role.ADMIN)|| data.get(0).getRole().equals(Role.MANAGER)) {
+                return ResponseEntity.ok().body(faqRepository.findById(id)
+                        .map(faq1 -> {
+                            faq1.setAnswer(faq.getAnswer());
+                            faq1.setQuestion(faq.getQuestion());
+                            return faqRepository.save(faq1);
+                        })
+                        .orElseGet(() -> {
+                            faq.setId(id);
+                            return faqRepository.save(faq);
+                        }));
+            } else {
+                throw new BadRequestException(NO_ACCESS);
+            }
         }
     }
 
@@ -153,11 +155,16 @@ public class FAQController {
             @ApiResponse(code = 500, message = "Internal server error")
     })
     void deleteFAQ(@PathVariable Long id, @CurrentUser UserPrincipal userPrincipal) {
-        List<UserRole> data = userRoleRepository.findAllByUser_Login(userPrincipal.getLogin());
-        if (data.get(0).getRole().equals(Role.ADMIN)) {
-            faqRepository.deleteById(id);
-        } else {
+        if(userPrincipal==null)
+        {
             throw new BadRequestException(NO_ACCESS);
+        } else {
+            List<UserRole> data = userRoleRepository.findAllByUser_Login(userPrincipal.getLogin());
+            if (data.get(0).getRole().equals(Role.ADMIN)|| data.get(0).getRole().equals(Role.MANAGER)) {
+                faqRepository.deleteById(id);
+            } else {
+                throw new BadRequestException(NO_ACCESS);
+            }
         }
     }
 }
