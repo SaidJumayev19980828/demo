@@ -32,7 +32,7 @@ public class FAQController {
     private final UserService userService;
 
     /**
-     * Creating new FAQ
+     *  Creating new FAQ
      * @param userPrincipal - authorized administrator
      * @param faq - FAQ entity
      * @return FAQ entity"

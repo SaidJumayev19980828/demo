@@ -84,10 +84,7 @@ public class FAQControllerTest {
     @SneakyThrows
     @Test
     public void editFAQ() {
-        Long id=1L;
-        FAQ faq=new FAQ();
-        faq.setAnswer("qweqewqe");
-        faq.setQuestion("asdasad");
+
         MockHttpServletRequestBuilder builder =
                 put("/api/faq/editfaq/")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)

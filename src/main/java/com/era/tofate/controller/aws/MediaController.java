@@ -18,7 +18,7 @@ public class MediaController {
     @PostMapping("/upload")
     public String uploadFile(@RequestParam(value = "file") MultipartFile[] file) {
         Arrays.asList(file).stream().forEach(multipartFile -> config.uploadFile(multipartFile));
-        return  "File uploaded";
+         return  "File uploaded";
     }
 
     @DeleteMapping("/delete/{fileName}")
