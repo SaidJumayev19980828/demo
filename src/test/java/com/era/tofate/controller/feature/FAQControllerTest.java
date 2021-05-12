@@ -42,7 +42,7 @@ public class FAQControllerTest {
     private WebApplicationContext webApplicationContext;
 
     public void setup() {
-        mvc= MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+         mvc= MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
     }
 
     @Value("${app.bearer_token}")

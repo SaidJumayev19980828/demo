@@ -32,7 +32,7 @@ public class Config {
                 .withCredentials(new AWSStaticCredentialsProvider(credentials))
                 .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration("https://hb.bizmrg.com/","10"))
                 .build();
-        int maxUploadThreads = 5;
+         int maxUploadThreads = 5;
         TransferManager tm = TransferManagerBuilder.standard()
                 .withS3Client(s3Client)
                 .withMultipartUploadThreshold((long) (5 * 1024 * 1025))
