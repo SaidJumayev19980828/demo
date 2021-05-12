@@ -103,7 +103,7 @@ public class FAQController {
     }
 
     /**
-     *   Update existing FAQ by id
+     *    Update existing FAQ by id
      *
      * @param userPrincipal - authorized administrator
      * @param faq - FAQ entity
