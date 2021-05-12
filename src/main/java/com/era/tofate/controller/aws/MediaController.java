@@ -29,6 +29,6 @@ public class MediaController {
     @GetMapping("/generateurl/{fileName}")
     public String downloadFile(@PathVariable String fileName) {
         String mediaUrl= "https://video_box.hb.bizmrg.com/"+fileName;
-        return mediaUrl;
+         return mediaUrl;
     }
 }
