@@ -65,8 +65,8 @@ public class FAQControllerTest {
                 .andDo(print());
     }
 
-    @SneakyThrows
-    @Test
+     @SneakyThrows
+     @Test
     public void getAll() {
         mvc.perform( MockMvcRequestBuilders.get("/api/faq")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
