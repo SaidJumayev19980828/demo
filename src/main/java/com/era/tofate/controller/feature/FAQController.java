@@ -40,7 +40,7 @@ public class FAQController {
      * @param faqId - FAQ id
      * @return FAQ Entity
      */
-    @GetMapping("/api/faq/")
+    @GetMapping("/api/faq/{faqId}")
     @ApiOperation(value = "Get FAQ by given id",
             notes = "Shows selected FAQ by given id")
     @ApiResponses({
@@ -48,7 +48,7 @@ public class FAQController {
             @ApiResponse(code = 400, message = "Error with access"),
             @ApiResponse(code = 500, message = "Internal server error")
     })
-    public ResponseEntity<?> Getone(@RequestParam Long faqId) {
+    public ResponseEntity<?> Getone(@PathVariable Long faqId) {
 
         return ResponseEntity.ok().body(faqRepository.findById(faqId)
                 .orElseThrow(() -> new ResourceNotFoundException("id not found")));

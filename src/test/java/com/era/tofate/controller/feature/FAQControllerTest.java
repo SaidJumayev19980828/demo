@@ -42,7 +42,7 @@ public class FAQControllerTest {
     private WebApplicationContext webApplicationContext;
 
     public void setup() {
-         mvc= MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+         mvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
     }
 
     @Value("${app.bearer_token}")
@@ -50,7 +50,6 @@ public class FAQControllerTest {
 
     @Test
     public void createFAQ() throws Exception {
-
         mvc.perform(post("/api/admin/createfaq")
                 .contentType("application/json")
                 .header("Authorization", "Bearer "+ token));
@@ -59,7 +58,6 @@ public class FAQControllerTest {
     @SneakyThrows
     @Test
     public void getone() {
-
         mvc.perform( MockMvcRequestBuilders.get("/api/faq")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .accept(MediaType.APPLICATION_JSON)
@@ -70,7 +68,6 @@ public class FAQControllerTest {
     @SneakyThrows
     @Test
     public void getAll() {
-
         mvc.perform( MockMvcRequestBuilders.get("/api/faq")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .accept(MediaType.APPLICATION_JSON)
@@ -84,7 +81,6 @@ public class FAQControllerTest {
     @SneakyThrows
     @Test
     public void editFAQ() {
-
         MockHttpServletRequestBuilder builder =
                 put("/api/faq/editfaq/")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -98,7 +94,6 @@ public class FAQControllerTest {
     @SneakyThrows
     @Test
     public void deleteFAQ() {
-
         MockHttpServletRequestBuilder builder =
                 MockMvcRequestBuilders.delete("/api/faq/deletefaq/")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)

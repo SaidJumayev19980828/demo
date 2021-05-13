@@ -27,7 +27,6 @@ public class Config {
 
     @SneakyThrows
     public String uploadFile(MultipartFile file) {
-
         AmazonS3 s3Client = AmazonS3ClientBuilder.standard()
                 .withCredentials(new AWSStaticCredentialsProvider(credentials))
                 .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration("https://hb.bizmrg.com/","10"))
@@ -52,7 +51,6 @@ public class Config {
         try (FileOutputStream fos = new FileOutputStream(convertedFile)) {
             fos.write(file.getBytes());
         } catch (IOException e) {
-
         }
         return convertedFile;
     }

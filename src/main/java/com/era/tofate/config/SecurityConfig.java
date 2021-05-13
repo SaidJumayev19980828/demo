@@ -69,7 +69,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/faq/**","/api/faq/all/**").permitAll()
                 .antMatchers("/api/user/account/**", "/api/virt/**").hasAnyAuthority("USER")
                 .antMatchers("/api/admin/virt/**", "/api/admin/user/**").hasAuthority("ADMIN")
-                .antMatchers("/api/admin/createfaq/**","/api/faq/deletefaq/**","/api/faq/editfaq/**").hasAnyAuthority("ADMIN","MANAGER");
+                .antMatchers("/api/faq/deletefaq/**","/api/admin/faq/**").hasAnyAuthority("ADMIN","MANAGER");
 
 
 
