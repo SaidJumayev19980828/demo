@@ -66,9 +66,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/**/*.js")
                 .permitAll()
                 .antMatchers("/api/user/auth/**", "/api/request", "/api/user/socialstatus/**").permitAll()
+                .antMatchers("/api/faq/**","/api/faq/all/**").permitAll()
                 .antMatchers("/api/user/account/**", "/api/virt/**").hasAnyAuthority("USER")
                 .antMatchers("/api/admin/virt/**", "/api/admin/user/**").hasAuthority("ADMIN")
-        ;
+                .antMatchers("/api/admin/createfaq/**","/api/faq/deletefaq/**","/api/faq/editfaq/**").hasAnyAuthority("ADMIN","MANAGER");
+
+
+
+
 
         // Add our custom Token based authentication filter
         http.addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);

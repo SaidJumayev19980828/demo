@@ -108,6 +108,8 @@ public class VirtController {
     })
     public ResponseEntity<?> createOrUpdateVirt(@CurrentUser UserPrincipal userPrincipal, @RequestBody VirtRequest virtRequest){
         if (userService.findById(userPrincipal.getId()).isPresent()) {
+            System.out.println("QQQ"+userService.findById(userPrincipal.getId()).isPresent());
+
             Virt existingVirt;
             if (virtRequest.getId() != null){
                 Optional<Virt> optionalVirt = virtService.findById(virtRequest.getId());

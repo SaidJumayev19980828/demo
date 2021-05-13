@@ -20,10 +20,11 @@ import javax.persistence.*;
 public class FAQ {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonIgnore
+
     private Long id;
 
     private String question;
 
     private String answer;
+
 }

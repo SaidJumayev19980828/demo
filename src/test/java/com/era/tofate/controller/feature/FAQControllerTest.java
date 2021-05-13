@@ -90,7 +90,6 @@ public class FAQControllerTest {
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .accept(MediaType.APPLICATION_JSON)
                         .header("Authorization", "Bearer " + token)
-                        .with(user("bbro").roles("USER"))
                         .characterEncoding("UTF-8");
         this.mvc.perform(builder)
                 .andDo(print());
